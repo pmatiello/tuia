@@ -22,3 +22,5 @@
 (defn cursor-column [column]
   (ansi-seq column "G"))
 
+(defn cursor-position [line column]
+  (ansi-seq line ";" column "H"))

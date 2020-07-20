@@ -1,9 +1,5 @@
-(ns clj-ansi.sgr)
-
-(def ^:private csi "\u001B[")
-
-(defn ^:private ansi-seq [code]
-  (str csi code))
+(ns clj-ansi.sgr
+  (:require [clj-ansi.shared :refer [ansi-seq]]))
 
 (def reset (ansi-seq "0m"))
 (def bold (ansi-seq "1m"))

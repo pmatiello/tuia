@@ -1,6 +1,10 @@
 {:deps    {}
  :paths   ["src"]
- :aliases {:test {:extra-paths ["test"]
-                  :extra-deps  {com.cognitect/test-runner {:git/url "https://github.com/cognitect-labs/test-runner.git"
-                                                           :sha     "f7ef16dc3b8332b0d77bc0274578ad5270fbfedd"}}
-                  :main-opts   ["-m" "cognitect.test-runner"]}}}
+ :aliases {:test     {:extra-paths ["test"]
+                      :extra-deps  {com.cognitect/test-runner {:git/url "https://github.com/cognitect-labs/test-runner.git"
+                                                               :sha     "f7ef16dc3b8332b0d77bc0274578ad5270fbfedd"}}
+                      :main-opts   ["-m" "cognitect.test-runner" "--exclude" ":integration"]}
+           :test-all {:extra-paths ["test"]
+                      :extra-deps  {com.cognitect/test-runner {:git/url "https://github.com/cognitect-labs/test-runner.git"
+                                                               :sha     "f7ef16dc3b8332b0d77bc0274578ad5270fbfedd"}}
+                      :main-opts   ["-m" "cognitect.test-runner"]}}}

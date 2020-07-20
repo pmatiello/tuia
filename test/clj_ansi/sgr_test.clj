@@ -23,4 +23,10 @@
     (println (str sgr/reverse-video "reverse" sgr/reverse-video-off)))
 
   (testing "conceal"
-    (println (str sgr/conceal "conceal" sgr/conceal-off "reveal"))))
+    (println (str sgr/conceal "conceal " sgr/conceal-off "reveal")))
+
+  (testing "foreground colors"
+    (println (str sgr/fg-red "red " sgr/fg-blue "blue " sgr/fg-default "default")))
+
+  (testing "intense foreground colors"
+    (println (str sgr/bold sgr/fg-red "red! " sgr/fg-blue "blue! " sgr/fg-default "default! " sgr/weight-off "default"))))

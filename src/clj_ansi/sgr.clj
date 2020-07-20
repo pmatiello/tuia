@@ -22,3 +22,13 @@
 (def reverse-video-off (ansi-seq "27m"))
 (def conceal-off (ansi-seq "28m"))
 (def strike-off (ansi-seq "29m"))
+
+(def fg-black (ansi-seq "30m"))
+(def fg-red (ansi-seq "31m"))
+(def fg-green (ansi-seq "32m"))
+(def fg-yellow (ansi-seq "33m"))
+(def fg-blue (ansi-seq "34m"))
+(def fg-purple (ansi-seq "35m"))
+(def fg-cyan (ansi-seq "36m"))
+(def fg-white (ansi-seq "37m"))
+(def fg-default (ansi-seq "39m"))

@@ -37,5 +37,4 @@
 (def bg-purple (ansi-seq "45m"))
 (def bg-cyan (ansi-seq "46m"))
 (def bg-white (ansi-seq "47m"))
-
 (def bg-default (ansi-seq "49m"))

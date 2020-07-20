@@ -23,3 +23,5 @@
 (deftest cursor-column-test
   (is (= "\u001b[1G") (cursor/cursor-column 1)))
 
+(deftest cursor-position-test
+  (is (= "\u001b[2;3H" (cursor/cursor-position 2 3))))

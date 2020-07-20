@@ -29,4 +29,8 @@
     (println (str sgr/fg-red "red " sgr/fg-blue "blue " sgr/fg-default "default")))
 
   (testing "intense foreground colors"
-    (println (str sgr/bold sgr/fg-red "red! " sgr/fg-blue "blue! " sgr/fg-default "default! " sgr/weight-off "default"))))
+    (println (str sgr/bold sgr/fg-red "red! " sgr/fg-blue "blue! " sgr/fg-default "default! " sgr/weight-off "default")))
+
+  (testing "background colors"
+    (println (str sgr/bg-cyan "cyan" sgr/bg-default " "
+                  sgr/bg-yellow "yellow" sgr/bg-default " default"))))

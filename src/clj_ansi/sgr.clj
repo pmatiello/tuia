@@ -32,3 +32,14 @@
 (def fg-cyan (ansi-seq "36m"))
 (def fg-white (ansi-seq "37m"))
 (def fg-default (ansi-seq "39m"))
+
+(def bg-black (ansi-seq "40m"))
+(def bg-red (ansi-seq "41m"))
+(def bg-green (ansi-seq "42m"))
+(def bg-yellow (ansi-seq "43m"))
+(def bg-blue (ansi-seq "44m"))
+(def bg-purple (ansi-seq "45m"))
+(def bg-cyan (ansi-seq "46m"))
+(def bg-white (ansi-seq "47m"))
+
+(def bg-default (ansi-seq "49m"))

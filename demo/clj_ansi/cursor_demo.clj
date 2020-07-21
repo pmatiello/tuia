@@ -1,8 +1,7 @@
-(ns demo.cursor-demo
-  (:require [clojure.test :refer :all]
-            [clj-ansi.cursor :as cursor]))
+(ns clj-ansi.cursor-demo
+  (:require [clj-ansi.cursor :as cursor]))
 
-(deftest output-seq-test
+(defn -main []
   (print "First line")
   (print (cursor/cursor-next-line 2))
   (print "Two lines from the first")

@@ -34,7 +34,24 @@
    30 :rs
    31 :us})
 
-(def is-control-char?
+(def ^:private escape-seqs
+  {[27 91 65] :up
+   [27 91 66] :down
+   [27 91 67] :right
+   [27 91 68] :left})
+
+(defn ^:private key->escape-seq [state key]
+  (cond
+    (-> key map? not) key
+    (-> key :escape?) (do (swap! state conj key) nil)
+    (-> @state empty?) key
+    :else (let [escape-seq-keys  (conj @state key)
+                escape-seq-codes (map :char-code escape-seq-keys)
+                escape-seq       (get escape-seqs escape-seq-codes)]
+            (reset! state [])
+            (or escape-seq :unknown))))
+
+(def ^:private is-control-char?
   (-> control-chars keys set))
 
 (defn ^:private key->control-char [key]
@@ -47,10 +64,14 @@
     (-> key :char-code char str)
     key))
 
-(defn parse-one [key]
-  (-> key
-      key->control-char
-      key->regular-char))
+(defn parse-each [state key]
+  (->> key
+       (key->escape-seq state)
+       key->control-char
+       key->regular-char))
 
 (defn parse [input-seq]
-  (map parse-one input-seq))
+  (let [state (atom [])]
+    (->> input-seq
+         (map (partial parse-each state))
+         (remove nil?))))

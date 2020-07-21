@@ -1,5 +1,6 @@
 (ns clj-ansi.input-demo
-  (:require [clojure.java.shell :refer [sh]])
+  (:require [clojure.java.shell :refer [sh]]
+            [clj-ansi.input :as input])
   (:import (java.io Reader)))
 
 (defn stdin->char-code [& _]
@@ -14,6 +15,7 @@
     (sh "/bin/sh" "-c" "stty -icanon -echo < /dev/tty")
     (->> (iterate stdin->char-code nil)
          (remove nil?)
+         input/parse
          (mapv println))
     (println "Done.")
     (finally

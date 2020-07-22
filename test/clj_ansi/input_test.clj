@@ -27,4 +27,20 @@
     (is (= [:right]
            (input/parse [{:char-code 27, :escape? true}
                          {:char-code 91, :escape? true}
-                         {:char-code 67, :escape? false}])))))
+                         {:char-code 67, :escape? false}])))
+    (is (= [:f1]
+           (input/parse [{:char-code 27, :escape? true}
+                         {:char-code 79, :escape? true}
+                         {:char-code 80, :escape? false}])))
+    (is (= [:f5]
+           (input/parse [{:char-code 27, :escape? true}
+                         {:char-code 91, :escape? true}
+                         {:char-code 49, :escape? true}
+                         {:char-code 53, :escape? true}
+                         {:char-code 126, :escape? false}]))))
+
+  (testing "returns :unknown when escape sequence is not recognised"
+    (is (= [:unknown]
+           (input/parse [{:char-code 27, :escape? true}
+                         {:char-code 99, :escape? true}
+                         {:char-code 99, :escape? false}])))))

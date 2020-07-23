@@ -1,4 +1,5 @@
-(ns clj-ansi.input)
+(ns clj-ansi.input
+  (:import (java.io Reader)))
 
 (def ^:private control-chars
   {0   :nul
@@ -59,7 +60,7 @@
 (defn ^:private key->escape-seq [state key]
   (cond
     (-> key map? not) key
-    (-> key :escape?) (do (swap! state conj key) nil)
+    (-> key :has-next?) (do (swap! state conj key) nil)
     (-> @state empty?) key
     :else (let [escape-seq-keys  (conj @state key)
                 escape-seq-codes (map :char-code escape-seq-keys)
@@ -91,3 +92,10 @@
     (->> input-seq
          (map (partial parse-each state))
          (remove nil?))))
+
+(defn reader->char-seq [^Reader reader]
+  (lazy-seq
+    (let [char-code (.read reader)
+          has-next? (do (Thread/sleep 0) (.ready reader))]
+      (cons {:char-code char-code :has-next? has-next?}
+            (reader->char-seq reader)))))

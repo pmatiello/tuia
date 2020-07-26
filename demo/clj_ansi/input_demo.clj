@@ -8,8 +8,8 @@
   (try
     (sh "/bin/sh" "-c" "stty -icanon -echo < /dev/tty")
     (->> *in*
-         input/reader->char-seq
-         input/parse
+         input/reader->input-seq
+         input/input-seq->char-seq
          (mapv println))
     (println "Done.")
     (finally

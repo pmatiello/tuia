@@ -1,26 +1,26 @@
 (ns clj-ansi.cursor
   (:require [clj-ansi.shared :refer [ansi-seq]]))
 
-(defn cursor-up [lines]
+(defn up [lines]
   (ansi-seq lines "A"))
 
-(defn cursor-down [lines]
+(defn down [lines]
   (ansi-seq lines "B"))
 
-(defn cursor-forward [columns]
+(defn forward [columns]
   (ansi-seq columns "C"))
 
-(defn cursor-back [columns]
+(defn back [columns]
   (ansi-seq columns "D"))
 
-(defn cursor-next-line [lines]
+(defn next-line [lines]
   (ansi-seq lines "E"))
 
-(defn cursor-previous-line [lines]
+(defn previous-line [lines]
   (ansi-seq lines "F"))
 
-(defn cursor-column [column]
+(defn column [column]
   (ansi-seq column "G"))
 
-(defn cursor-position [line column]
+(defn position [line column]
   (ansi-seq line ";" column "H"))

@@ -87,15 +87,15 @@
        key->control-char
        key->regular-char))
 
-(defn parse [input-seq]
+(defn input-seq->char-seq [input-seq]
   (let [state (atom [])]
     (->> input-seq
          (map (partial parse-each state))
          (remove nil?))))
 
-(defn reader->char-seq [^Reader reader]
+(defn reader->input-seq [^Reader reader]
   (lazy-seq
     (let [char-code (.read reader)
           has-next? (do (Thread/sleep 0) (.ready reader))]
       (cons {:char-code char-code :has-next? has-next?}
-            (reader->char-seq reader)))))
+            (reader->input-seq reader)))))

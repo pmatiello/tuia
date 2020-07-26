@@ -1,11 +1,11 @@
 (ns clj-ansi.erase
   (:require [clj-ansi.shared :refer [ansi-seq]]))
 
-(def from-cursor
+(def below
   (ansi-seq "0J"))
 
-(def to-cursor
+(def above
   (ansi-seq "1J"))
 
-(def full-screen
+(def all
   (ansi-seq "2J"))

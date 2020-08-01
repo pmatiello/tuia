@@ -1,5 +1,5 @@
 (ns clj-ansi.erase
-  (:require [clj-ansi.shared :refer [ansi-seq]]))
+  (:require [clj-ansi.internal.output :refer [ansi-seq]]))
 
 (def below
   (ansi-seq "0J"))

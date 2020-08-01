@@ -2,41 +2,30 @@
   (:require [clj-ansi.internal.input :as internal.input])
   (:import (java.io Reader)))
 
-(defn ^:private key->escape-seq [state key]
-  (cond
-    (-> key map? not) key
-    (-> key :has-next?) (do (swap! state conj key) nil)
-    (-> @state empty?) key
-    :else (let [escape-seq-keys  (conj @state key)
-                escape-seq-codes (map :char-code escape-seq-keys)
-                escape-seq       (get internal.input/escape-seqs escape-seq-codes)]
-            (reset! state [])
-            (or escape-seq :unknown))))
+(defn ^:private each->key [acc key]
+  (if (:has-next? key)
+    (do (vswap! acc conj key) nil)
+    (let [result (conj @acc key)]
+      (vreset! acc [])
+      result)))
 
-(def ^:private is-control-char?
-  (-> internal.input/control-chars keys set))
+(defn ^:private input-seq->key-seq [input-seq]
+  (let [acc (volatile! [])]
+    (->> input-seq
+         (map (partial each->key acc))
+         (remove nil?))))
 
-(defn ^:private key->control-char [key]
-  (if (and (map? key) (-> key :char-code is-control-char?))
-    (-> key :char-code internal.input/control-chars)
-    key))
-
-(defn ^:private key->regular-char [key]
-  (if (map? key)
-    (-> key :char-code char str)
-    key))
-
-(defn ^:private parse-each [state key]
-  (->> key
-       (key->escape-seq state)
-       key->control-char
-       key->regular-char))
+(defn ^:private key->char-seq [key]
+  (let [char-codes (map :char-code key)]
+    (or (get internal.input/special-chars char-codes)
+        (and (= (count key) 1)
+             (-> key first :char-code char str))
+        :unknown)))
 
 (defn input-seq->char-seq [input-seq]
-  (let [state (atom [])]
-    (->> input-seq
-         (map (partial parse-each state))
-         (remove nil?))))
+  (->> input-seq
+       input-seq->key-seq
+       (map key->char-seq)))
 
 (defn reader->input-seq [^Reader reader]
   (lazy-seq

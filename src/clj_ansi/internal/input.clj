@@ -1,6 +1,6 @@
 (ns clj-ansi.internal.input)
 
-(def control-chars
+(def ^:private control-chars
   {0   :nul
    1   :soh
    2   :stx
@@ -35,7 +35,7 @@
    31  :us
    127 :del})
 
-(def escape-seqs
+(def ^:private escaped-chars
   {[27 91 65]        :up
    [27 91 66]        :down
    [27 91 67]        :right
@@ -55,3 +55,7 @@
    [27 91 50 49 126] :f10
    [27 91 50 51 126] :f11
    [27 91 50 52 126] :f12})
+
+(def special-chars
+  (merge (into {} (map (fn [[k v]] [[k] v]) control-chars))
+         escaped-chars))

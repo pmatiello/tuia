@@ -26,7 +26,7 @@
     (-> key :char-code char str)
     key))
 
-(defn parse-each [state key]
+(defn ^:private parse-each [state key]
   (->> key
        (key->escape-seq state)
        key->control-char

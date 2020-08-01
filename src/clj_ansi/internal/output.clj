@@ -1,4 +1,4 @@
-(ns clj-ansi.shared)
+(ns clj-ansi.internal.output)
 
 (def ^:private csi "\u001b[")
 

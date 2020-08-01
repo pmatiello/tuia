@@ -1,5 +1,5 @@
 (ns clj-ansi.graphics
-  (:require [clj-ansi.shared :refer [ansi-seq]]))
+  (:require [clj-ansi.internal.output :refer [ansi-seq]]))
 
 (def reset (ansi-seq "0m"))
 (def bold (ansi-seq "1m"))

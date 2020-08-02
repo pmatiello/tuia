@@ -24,3 +24,6 @@
 
 (defn position [line column]
   (ansi-seq line ";" column "H"))
+
+(def current-position
+  (ansi-seq "6n"))

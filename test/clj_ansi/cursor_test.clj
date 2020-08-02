@@ -25,3 +25,6 @@
 
 (deftest position-test
   (is (= "\u001b[2;3H" (cursor/position 2 3))))
+
+(deftest current-position-test
+  (is (= "\u001b[6n" cursor/current-position)))

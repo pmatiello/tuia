@@ -15,17 +15,22 @@
          (map (partial each->key acc))
          (remove nil?))))
 
-(defn ^:private key->char-seq [key]
+(defn ^:private key->char [key]
   (let [char-codes (map :char-code key)]
-    (or (get internal.input/special-chars char-codes)
-        (and (= (count key) 1)
-             (-> key first :char-code char str))
-        :unknown)))
+    (cond
+      (contains? internal.input/special-chars char-codes)
+      (get internal.input/special-chars char-codes)
+
+      (= (count key) 1)
+      (-> key first :char-code char str)
+
+      :else
+      :unknown)))
 
 (defn input-seq->char-seq [input-seq]
   (->> input-seq
        input-seq->key-seq
-       (map key->char-seq)))
+       (map key->char)))
 
 (defn reader->input-seq [^Reader reader]
   (lazy-seq

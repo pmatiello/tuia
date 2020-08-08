@@ -59,3 +59,5 @@
 (def special-chars
   (merge (into {} (map (fn [[k v]] [[k] v]) control-chars))
          escaped-chars))
+
+(def state (atom {}))

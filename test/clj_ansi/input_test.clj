@@ -1,6 +1,7 @@
 (ns clj-ansi.input-test
   (:require [clojure.test :refer :all]
-            [clj-ansi.input :as input])
+            [clj-ansi.input :as input]
+            [clj-ansi.internal.input :as internal.input])
   (:import (java.io StringReader)))
 
 (deftest input-seq->char-seq-test
@@ -39,6 +40,17 @@
                                        {:char-code 49, :has-next? true}
                                        {:char-code 53, :has-next? true}
                                        {:char-code 126, :has-next? false}]))))
+
+  (testing "decodes and stores current cursor position"
+    (is (empty? (input/input-seq->char-seq [{:char-code 27, :has-next? true}
+                                            {:char-code 91, :has-next? true}
+                                            {:char-code 49, :has-next? true}
+                                            {:char-code 50, :has-next? true}
+                                            {:char-code 59, :has-next? true}
+                                            {:char-code 51, :has-next? true}
+                                            {:char-code 52, :has-next? true}
+                                            {:char-code 82, :has-next? false}])))
+    (is (= [12 34] (:cursor-position @internal.input/state))))
 
   (testing "returns :unknown when escape sequence is not recognised"
     (is (= [:unknown]

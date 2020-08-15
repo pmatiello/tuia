@@ -23,7 +23,7 @@
        input-seq->key-seq
        (map key->key-codes)
        (map internal.input/key-codes->char)
-       (remove nil?)))
+       (remove #{::internal.input/omit})))
 
 (defn reader->input-seq [^Reader reader]
   (lazy-seq

@@ -1,6 +1,8 @@
 (ns clj-ansi.internal.input
   (:require [clojure.string :as str]))
 
+(def state (atom {}))
+
 (def ^:private control-chars
   {0   :nul
    1   :soh
@@ -61,22 +63,23 @@
   (merge (into {} (map (fn [[k v]] [[k] v]) control-chars))
          escaped-chars))
 
-(def state (atom {}))
+(defn ^:private special-char [key-codes]
+  (get special-chars key-codes))
 
-(defn key-codes->char [key-codes]
-  (cond
-    (contains? special-chars key-codes)
-    (get special-chars key-codes)
+(defn ^:private regular-char [key-codes]
+  (when (= (count key-codes) 1)
+    (-> key-codes first char str)))
 
-    (= (count key-codes) 1)
-    (-> key-codes first char str)
-
-    (and (= (take 2 key-codes) [27 91]) (= (last key-codes) 82))
+(defn ^:private device-status-report [key-codes]
+  (when (and (= (take 2 key-codes) [27 91]) (= (last key-codes) 82))
     (let [pos-chars (->> key-codes (drop 2) drop-last)
           line      (->> pos-chars (take-while #(not= % 59)) (map char) str/join Integer/parseInt)
           column    (->> pos-chars (drop-while #(not= % 59)) (drop 1) (map char) str/join Integer/parseInt)]
       (swap! state assoc :cursor-position [line column])
-      nil)
+      ::omit)))
 
-    :else
-    :unknown))
+(defn key-codes->char [key-codes]
+  (or (special-char key-codes)
+      (regular-char key-codes)
+      (device-status-report key-codes)
+      :unknown))

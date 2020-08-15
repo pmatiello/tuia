@@ -1,6 +1,5 @@
 (ns clj-ansi.input
-  (:require [clj-ansi.internal.input :as internal.input]
-            [clojure.string :as str])
+  (:require [clj-ansi.internal.input :as internal.input])
   (:import (java.io Reader)))
 
 (defn ^:private each->key [acc key]
@@ -16,29 +15,14 @@
          (map (partial each->key acc))
          (remove nil?))))
 
-(defn ^:private key->char [key]
-  (let [char-codes (map :char-code key)]
-    (cond
-      (contains? internal.input/special-chars char-codes)
-      (get internal.input/special-chars char-codes)
-
-      (= (count key) 1)
-      (-> key first :char-code char str)
-
-      (and (= (take 2 char-codes) [27 91]) (= (last char-codes) 82))
-      (let [pos-chars (->> char-codes (drop 2) drop-last)
-            line      (->> pos-chars (take-while #(not= % 59)) (map char) str/join Integer/parseInt)
-            column    (->> pos-chars (drop-while #(not= % 59)) (drop 1) (map char) str/join Integer/parseInt)]
-        (swap! internal.input/state assoc :cursor-position [line column])
-        nil)
-
-      :else
-      :unknown)))
+(def ^:private key->key-codes
+  (partial map :char-code))
 
 (defn input-seq->char-seq [input-seq]
   (->> input-seq
        input-seq->key-seq
-       (map key->char)
+       (map key->key-codes)
+       (map internal.input/key-codes->char)
        (remove nil?)))
 
 (defn reader->input-seq [^Reader reader]

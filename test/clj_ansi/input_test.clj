@@ -13,33 +13,13 @@
 
   (testing "decodes control characters"
     (is (= [:nul]
-           (input/input-seq->char-seq [{:char-code 0 :has-next? false}])))
-    (is (= [:eot]
-           (input/input-seq->char-seq [{:char-code 4 :has-next? false}])))
-    (is (= [:lf]
-           (input/input-seq->char-seq [{:char-code 10 :has-next? false}])))
-    (is (= [:esc]
-           (input/input-seq->char-seq [{:char-code 27 :has-next? false}]))))
+           (input/input-seq->char-seq [{:char-code 0 :has-next? false}]))))
 
   (testing "decodes escape sequences"
     (is (= [:up]
            (input/input-seq->char-seq [{:char-code 27, :has-next? true}
                                        {:char-code 91, :has-next? true}
-                                       {:char-code 65, :has-next? false}])))
-    (is (= [:right]
-           (input/input-seq->char-seq [{:char-code 27, :has-next? true}
-                                       {:char-code 91, :has-next? true}
-                                       {:char-code 67, :has-next? false}])))
-    (is (= [:f1]
-           (input/input-seq->char-seq [{:char-code 27, :has-next? true}
-                                       {:char-code 79, :has-next? true}
-                                       {:char-code 80, :has-next? false}])))
-    (is (= [:f5]
-           (input/input-seq->char-seq [{:char-code 27, :has-next? true}
-                                       {:char-code 91, :has-next? true}
-                                       {:char-code 49, :has-next? true}
-                                       {:char-code 53, :has-next? true}
-                                       {:char-code 126, :has-next? false}]))))
+                                       {:char-code 65, :has-next? false}]))))
 
   (testing "decodes and stores current cursor position"
     (is (empty? (input/input-seq->char-seq [{:char-code 27, :has-next? true}

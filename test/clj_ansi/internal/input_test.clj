@@ -20,5 +20,10 @@
     (is (= :f1 (internal.input/key-codes->char [27 79 80])))
     (is (= :f5 (internal.input/key-codes->char [27 91 49 53 126]))))
 
+  (testing "decodes and stores current cursor position"
+    (is (= ::internal.input/omit
+           (internal.input/key-codes->char [27 91 49 50 59 51 52 82])))
+    (is (= [12 34] (:cursor-position @internal.input/state))))
+
   (testing "maps unknown keys to :unknown"
     (is (= :unknown (internal.input/key-codes->char [27 99 99])))))

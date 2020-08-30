@@ -46,6 +46,8 @@
    [27 91 70]        :end
    [27 91 71]        :keypad-5
    [27 91 72]        :home
+   [27 91 90]        :cbt
+   [27 91 51 126]    :kdch1
    [27 79 80]        :f1
    [27 79 81]        :f2
    [27 79 82]        :f3
@@ -82,4 +84,5 @@
   (or (special-char key-codes)
       (regular-char key-codes)
       (device-status-report key-codes)
+      (println ">>>" key-codes)
       :unknown))

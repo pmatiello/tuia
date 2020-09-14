@@ -24,7 +24,17 @@
     (is (= [:unknown]
            (input/input-seq->char-seq [{:char-code 27, :has-next? true}
                                        {:char-code 99, :has-next? true}
-                                       {:char-code 99, :has-next? false}])))))
+                                       {:char-code 99, :has-next? false}]))))
+
+  (testing "splits multiple buffered escape sequences"
+    (is (= [:up :esc :down]
+           (input/input-seq->char-seq [{:char-code 27, :has-next? true}
+                                       {:char-code 91, :has-next? true}
+                                       {:char-code 65, :has-next? true}
+                                       {:char-code 27, :has-next? true}
+                                       {:char-code 27, :has-next? true}
+                                       {:char-code 91, :has-next? true}
+                                       {:char-code 66, :has-next? false}])))))
 
 (deftest reader->input-seq-test
   (let [test-string "input"

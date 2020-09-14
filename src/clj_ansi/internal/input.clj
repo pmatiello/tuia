@@ -84,5 +84,4 @@
   (or (special-char key-codes)
       (regular-char key-codes)
       (device-status-report key-codes)
-      (println ">>>" key-codes)
       :unknown))

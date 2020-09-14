@@ -3,8 +3,17 @@
   (:import (java.io Reader)))
 
 (defn ^:private each->key [acc key]
-  (if (:has-next? key)
-    (do (vswap! acc conj key) nil)
+  (cond
+    (and (:has-next? key) (= (:char-code key) 27))
+    (let [result @acc]
+      (vreset! acc [key])
+      result)
+
+    (:has-next? key)
+    (do (vswap! acc conj key)
+        nil)
+
+    :else
     (let [result (conj @acc key)]
       (vreset! acc [])
       result)))
@@ -13,7 +22,7 @@
   (let [acc (volatile! [])]
     (->> input-seq
          (map (partial each->key acc))
-         (remove nil?))))
+         (remove empty?))))
 
 (def ^:private key->key-codes
   (partial map :char-code))
@@ -28,6 +37,8 @@
 (defn reader->input-seq [^Reader reader]
   (lazy-seq
     (let [char-code (.read reader)
-          has-next? (do (Thread/sleep 0) (.ready reader))]
+          _         (if (= 27 char-code)
+                      (Thread/sleep 10))
+          has-next? (.ready reader)]
       (cons {:char-code char-code :has-next? has-next?}
             (reader->input-seq reader)))))

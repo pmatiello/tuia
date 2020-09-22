@@ -1,6 +1,6 @@
-(ns clj-ansi.input-test
+(ns pmatiello.terminus.ansi.input-test
   (:require [clojure.test :refer :all]
-            [clj-ansi.input :as input])
+            [pmatiello.terminus.ansi.input :as input])
   (:import (java.io StringReader)))
 
 (deftest reader->event-seq-test

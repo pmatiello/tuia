@@ -1,5 +1,5 @@
-(ns clj-ansi.internal.input-parsing
-  (:require [clj-ansi.internal.input-event :as input-event])
+(ns pmatiello.terminus.ansi.internal.input-parsing
+  (:require [pmatiello.terminus.ansi.internal.input-event :as input-event])
   (:import (java.io Reader)))
 
 (defn ^:private starting-escape-sequence? [key]

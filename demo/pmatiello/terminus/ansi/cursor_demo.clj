@@ -1,5 +1,5 @@
-(ns clj-ansi.cursor-demo
-  (:require [clj-ansi.cursor :as cursor]))
+(ns pmatiello.terminus.ansi.cursor-demo
+  (:require [pmatiello.terminus.ansi.cursor :as cursor]))
 
 (defn -main []
   (print "First line")

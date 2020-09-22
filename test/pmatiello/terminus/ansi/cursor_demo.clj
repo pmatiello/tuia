@@ -1,6 +1,6 @@
-(ns clj-ansi.cursor-test
+(ns pmatiello.terminus.ansi.cursor-demo
   (:require [clojure.test :refer :all]
-            [clj-ansi.cursor :as cursor]))
+            [pmatiello.terminus.ansi.cursor :as cursor]))
 
 (deftest up-test
   (is (= "\u001b[1A") (cursor/up 1)))

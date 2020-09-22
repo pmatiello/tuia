@@ -3,38 +3,42 @@
             [clj-ansi.input :as input])
   (:import (java.io StringReader)))
 
-(deftest input-seq->char-seq-test
+(deftest input-seq->event-seq-test
   (testing "decodes regular characters"
-    (is (= ["A" "B" "C"]
-           (input/input-seq->char-seq [{:char-code 65 :has-next? false}
-                                       {:char-code 66 :has-next? false}
-                                       {:char-code 67 :has-next? false}]))))
+    (is (= [{:event :keypress :value "A"}
+            {:event :keypress :value "B"}
+            {:event :keypress :value "C"}]
+           (input/input-seq->event-seq [{:char-code 65 :has-next? false}
+                                        {:char-code 66 :has-next? false}
+                                        {:char-code 67 :has-next? false}]))))
 
   (testing "decodes control characters"
-    (is (= [:nul]
-           (input/input-seq->char-seq [{:char-code 0 :has-next? false}]))))
+    (is (= [{:event :keypress :value :nul}]
+           (input/input-seq->event-seq [{:char-code 0 :has-next? false}]))))
 
   (testing "decodes escape sequences"
-    (is (= [:up]
-           (input/input-seq->char-seq [{:char-code 27, :has-next? true}
-                                       {:char-code 91, :has-next? true}
-                                       {:char-code 65, :has-next? false}]))))
+    (is (= [{:event :keypress :value :up}]
+           (input/input-seq->event-seq [{:char-code 27, :has-next? true}
+                                        {:char-code 91, :has-next? true}
+                                        {:char-code 65, :has-next? false}]))))
 
   (testing "returns :unknown when escape sequence is not recognised"
-    (is (= [:unknown]
-           (input/input-seq->char-seq [{:char-code 27, :has-next? true}
-                                       {:char-code 99, :has-next? true}
-                                       {:char-code 99, :has-next? false}]))))
+    (is (= [{:event :unknown}]
+           (input/input-seq->event-seq [{:char-code 27, :has-next? true}
+                                        {:char-code 99, :has-next? true}
+                                        {:char-code 99, :has-next? false}]))))
 
   (testing "splits multiple buffered escape sequences"
-    (is (= [:up :esc :down]
-           (input/input-seq->char-seq [{:char-code 27, :has-next? true}
-                                       {:char-code 91, :has-next? true}
-                                       {:char-code 65, :has-next? true}
-                                       {:char-code 27, :has-next? true}
-                                       {:char-code 27, :has-next? true}
-                                       {:char-code 91, :has-next? true}
-                                       {:char-code 66, :has-next? false}])))))
+    (is (= [{:event :keypress :value :up}
+            {:event :keypress :value :esc}
+            {:event :keypress :value :down}]
+           (input/input-seq->event-seq [{:char-code 27, :has-next? true}
+                                        {:char-code 91, :has-next? true}
+                                        {:char-code 65, :has-next? true}
+                                        {:char-code 27, :has-next? true}
+                                        {:char-code 27, :has-next? true}
+                                        {:char-code 91, :has-next? true}
+                                        {:char-code 66, :has-next? false}])))))
 
 (deftest reader->input-seq-test
   (let [test-string "input"

@@ -1,8 +1,6 @@
 (ns clj-ansi.internal.input-event
   (:require [clojure.string :as str]))
 
-(def state (atom {}))
-
 (def ^:private control-chars
   {0   :nul
    1   :soh
@@ -79,8 +77,7 @@
     (let [pos-chars (->> key-codes (drop 2) drop-last)
           line      (->> pos-chars (take-while #(not= % 59)) (map char) str/join Integer/parseInt)
           column    (->> pos-chars (drop-while #(not= % 59)) (drop 1) (map char) str/join Integer/parseInt)]
-      (swap! state assoc :cursor-position [line column])
-      ::omit)))
+      {:event :cursor-position :value [line column]})))
 
 (defn key-codes->event [key-codes]
   (or (special-char key-codes)

@@ -32,9 +32,8 @@
            (input-event/key-codes->event [27 91 49 53 126]))))
 
   (testing "decodes and stores current cursor position"
-    (is (= ::input-event/omit
-           (input-event/key-codes->event [27 91 49 50 59 51 52 82])))
-    (is (= [12 34] (:cursor-position @input-event/state))))
+    (is (= {:event :cursor-position :value [12 34]}
+           (input-event/key-codes->event [27 91 49 50 59 51 52 82]))))
 
   (testing "maps unknown keys to :unknown"
     (is (= {:event :unknown} (input-event/key-codes->event [27 99 99])))))

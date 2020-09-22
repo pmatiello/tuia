@@ -18,7 +18,7 @@
   (let [initial-stty (stty/current)]
     (println "Initial line settings:" (stty/current))
     (try
-      (sh "/bin/sh" "-c" "stty -icanon -echo < /dev/tty")
+      (stty/unset-flags! :icanon :echo)
       (println "Current line settings:" (stty/current))
       (->> *in*
            input/reader->event-seq
@@ -27,4 +27,5 @@
         (println (.getMessage e)))
       (finally
         (stty/apply! initial-stty)
-        (println "Final line settings:" (stty/current))))))
+        (println "Final line settings:" (stty/current))
+        (System/exit 0)))))

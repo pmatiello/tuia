@@ -16,7 +16,7 @@
     (sh "/bin/sh" "-c" "stty -icanon -echo < /dev/tty")
     (->> *in*
          input/reader->input-seq
-         input/input-seq->char-seq
+         input/input-seq->event-seq
          (mapv handle))
     (println "Done.")
     (finally

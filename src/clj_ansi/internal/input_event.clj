@@ -1,4 +1,4 @@
-(ns clj-ansi.internal.input
+(ns clj-ansi.internal.input-event
   (:require [clojure.string :as str]))
 
 (def state (atom {}))
@@ -66,11 +66,13 @@
          escaped-chars))
 
 (defn ^:private special-char [key-codes]
-  (get special-chars key-codes))
+  (if-let [key (get special-chars key-codes)]
+    {:event :keypress :value key}))
 
 (defn ^:private regular-char [key-codes]
   (when (= (count key-codes) 1)
-    (-> key-codes first char str)))
+    {:event :keypress
+     :value (-> key-codes first char str)}))
 
 (defn ^:private device-status-report [key-codes]
   (when (and (= (take 2 key-codes) [27 91]) (= (last key-codes) 82))
@@ -80,8 +82,8 @@
       (swap! state assoc :cursor-position [line column])
       ::omit)))
 
-(defn key-codes->char [key-codes]
+(defn key-codes->event [key-codes]
   (or (special-char key-codes)
       (regular-char key-codes)
       (device-status-report key-codes)
-      :unknown))
+      {:event :unknown}))

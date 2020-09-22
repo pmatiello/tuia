@@ -1,5 +1,5 @@
 (ns clj-ansi.input
-  (:require [clj-ansi.internal.input :as internal.input])
+  (:require [clj-ansi.internal.input-event :as input-event])
   (:import (java.io Reader)))
 
 (defn ^:private each->key [acc key]
@@ -18,7 +18,7 @@
       (vreset! acc [])
       result)))
 
-(defn ^:private input-seq->key-seq [input-seq]
+(defn ^:private with-grouped-escape-seqs [input-seq]
   (let [acc (volatile! [])]
     (->> input-seq
          (map (partial each->key acc))
@@ -27,12 +27,12 @@
 (def ^:private key->key-codes
   (partial map :char-code))
 
-(defn input-seq->char-seq [input-seq]
+(defn input-seq->event-seq [input-seq]
   (->> input-seq
-       input-seq->key-seq
+       with-grouped-escape-seqs
        (map key->key-codes)
-       (map internal.input/key-codes->char)
-       (remove #{::internal.input/omit})))
+       (map input-event/key-codes->event)
+       (remove #{::input-event/omit})))
 
 (defn reader->input-seq [^Reader reader]
   (lazy-seq

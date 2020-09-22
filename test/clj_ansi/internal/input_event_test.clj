@@ -36,4 +36,5 @@
            (input-event/key-codes->event [27 91 49 50 59 51 52 82]))))
 
   (testing "maps unknown keys to :unknown"
-    (is (= {:event :unknown} (input-event/key-codes->event [27 99 99])))))
+    (is (= {:event :unknown :value [27 99 99]}
+           (input-event/key-codes->event [27 99 99])))))

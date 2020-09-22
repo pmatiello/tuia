@@ -1,5 +1,5 @@
-(ns clj-ansi.cursor
-  (:require [clj-ansi.internal.output :refer [ansi-seq]]))
+(ns pmatiello.terminus.ansi.cursor
+  (:require [pmatiello.terminus.ansi.internal.output :refer [ansi-seq]]))
 
 (defn up [lines]
   (ansi-seq lines "A"))

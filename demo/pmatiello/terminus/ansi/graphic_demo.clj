@@ -1,6 +1,6 @@
-(ns clj-ansi.graphic-demo
+(ns pmatiello.terminus.ansi.graphic-demo
   (:require [clojure.test :refer :all]
-            [clj-ansi.graphics :as graphics]))
+            [pmatiello.terminus.ansi.graphics :as graphics]))
 
 (defn -main []
   (println (str graphics/bold "bold" graphics/weight-off))

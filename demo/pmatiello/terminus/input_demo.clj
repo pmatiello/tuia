@@ -1,7 +1,8 @@
-(ns pmatiello.terminus.ansi.input-demo
+(ns pmatiello.terminus.input-demo
   (:require [clojure.java.shell :refer [sh]]
             [pmatiello.terminus.ansi.input :as input]
-            [pmatiello.terminus.ansi.cursor :as cursor]))
+            [pmatiello.terminus.ansi.cursor :as cursor]
+            [pmatiello.terminus.stty :as stty]))
 
 (defn handle [event]
   (println event)
@@ -12,11 +13,13 @@
 (defn -main []
   (println "Start typing.")
   (println "Enter Ctrl+C to quit.")
+  (println "Current line settings:" (stty/current))
   (try
     (sh "/bin/sh" "-c" "stty -icanon -echo < /dev/tty")
+    (println "Current line settings:" (stty/current))
     (->> *in*
          input/reader->event-seq
          (mapv handle))
-    (println "Done.")
     (finally
+      (println "Done.")
       (sh "/bin/sh" "-c" "stty icanon echo < /dev/tty"))))

@@ -2,6 +2,7 @@
  :paths   ["src"]
  :aliases {:test {:extra-paths ["test"]
                   :extra-deps  {com.cognitect/test-runner {:git/url "https://github.com/cognitect-labs/test-runner.git"
-                                                           :sha     "f7ef16dc3b8332b0d77bc0274578ad5270fbfedd"}}
+                                                           :sha     "f7ef16dc3b8332b0d77bc0274578ad5270fbfedd"}
+                                nubank/mockfn             {:mvn/version "0.6.1"}}
                   :main-opts   ["-m" "cognitect.test-runner"]}
            :demo {:extra-paths ["demo"]}}}

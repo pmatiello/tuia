@@ -31,8 +31,7 @@
   (->> input-seq
        with-grouped-escape-seqs
        (map key->key-codes)
-       (map input-event/key-codes->event)
-       (remove #{::input-event/omit})))
+       (map input-event/key-codes->event)))
 
 (defn reader->input-seq [^Reader reader]
   (lazy-seq

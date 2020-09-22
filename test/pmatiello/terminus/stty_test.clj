@@ -17,3 +17,15 @@
   (mfn/verifying
     (sh "/bin/sh" "-c" "stty gfmt1:cflag=4b00:iflag=2306 < /dev/tty")
     :irrelevant (mfn.matchers/exactly 1)))
+
+(mfn/deftest set-flags!-test
+  (stty/set-flags! :icanon :echo)
+  (mfn/verifying
+    (sh "/bin/sh" "-c" "stty icanon echo < /dev/tty")
+    :irrelevant (mfn.matchers/exactly 1)))
+
+(mfn/deftest unset-flags!-test
+  (stty/unset-flags! :icanon :echo)
+  (mfn/verifying
+    (sh "/bin/sh" "-c" "stty -icanon -echo < /dev/tty")
+    :irrelevant (mfn.matchers/exactly 1)))

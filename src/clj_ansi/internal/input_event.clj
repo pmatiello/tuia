@@ -83,4 +83,4 @@
   (or (special-char key-codes)
       (regular-char key-codes)
       (device-status-report key-codes)
-      {:event :unknown}))
+      {:event :unknown :value key-codes}))

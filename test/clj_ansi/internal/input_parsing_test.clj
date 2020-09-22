@@ -26,7 +26,7 @@
               {:char-code 65, :has-next? false}]))))
 
   (testing "returns :unknown when escape sequence is not recognised"
-    (is (= [{:event :unknown}]
+    (is (= [{:event :unknown :value [27 99 99]}]
            (input-parsing/input-seq->event-seq
              [{:char-code 27, :has-next? true}
               {:char-code 99, :has-next? true}

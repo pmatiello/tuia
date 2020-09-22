@@ -1,6 +1,6 @@
-(ns clj-ansi.internal.input-parsing-test
+(ns pmatiello.terminus.ansi.internal.input-parsing-test
   (:require [clojure.test :refer :all]
-            [clj-ansi.internal.input-parsing :as input-parsing])
+            [pmatiello.terminus.ansi.internal.input-parsing :as input-parsing])
   (:import (java.io StringReader)))
 
 (deftest input-seq->event-seq-test

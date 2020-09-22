@@ -1,5 +1,5 @@
-(ns clj-ansi.graphics
-  (:require [clj-ansi.internal.output :refer [ansi-seq]]))
+(ns pmatiello.terminus.ansi.graphics
+  (:require [pmatiello.terminus.ansi.internal.output :refer [ansi-seq]]))
 
 (def reset (ansi-seq "0m"))
 (def bold (ansi-seq "1m"))

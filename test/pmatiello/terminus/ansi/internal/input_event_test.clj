@@ -1,6 +1,6 @@
-(ns clj-ansi.internal.input-event-test
+(ns pmatiello.terminus.ansi.internal.input-event-test
   (:require [clojure.test :refer :all])
-  (:require [clj-ansi.internal.input-event :as input-event]))
+  (:require [pmatiello.terminus.ansi.internal.input-event :as input-event]))
 
 (deftest key-codes->event
   (testing "maps regular key to char"

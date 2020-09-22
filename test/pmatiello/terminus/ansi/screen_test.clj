@@ -1,6 +1,6 @@
-(ns clj-ansi.screen-test
+(ns pmatiello.terminus.ansi.screen-test
   (:require [clojure.test :refer :all])
-  (:require [clj-ansi.screen :as screen]))
+  (:require [pmatiello.terminus.ansi.screen :as screen]))
 
 (deftest normal-bufer-test
   (is (= "\u001b[?1049l" screen/normal-buffer)))

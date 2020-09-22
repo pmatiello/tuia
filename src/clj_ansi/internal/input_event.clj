@@ -1,7 +1,7 @@
 (ns clj-ansi.internal.input-event
   (:require [clojure.string :as str]))
 
-(def ^:private control-chars
+(def ^:private control-keys
   {0   :nul
    1   :soh
    2   :stx
@@ -36,7 +36,7 @@
    31  :us
    127 :del})
 
-(def ^:private escaped-chars
+(def ^:private escaped-keys
   {[27 91 65]        :up
    [27 91 66]        :down
    [27 91 67]        :right
@@ -59,15 +59,15 @@
    [27 91 50 51 126] :f11
    [27 91 50 52 126] :f12})
 
-(def ^:private special-chars
-  (merge (into {} (map (fn [[k v]] [[k] v]) control-chars))
-         escaped-chars))
+(def ^:private special-keys
+  (merge (into {} (map (fn [[k v]] [[k] v]) control-keys))
+         escaped-keys))
 
-(defn ^:private special-char [key-codes]
-  (if-let [key (get special-chars key-codes)]
+(defn ^:private special-key [key-codes]
+  (if-let [key (get special-keys key-codes)]
     {:event :keypress :value key}))
 
-(defn ^:private regular-char [key-codes]
+(defn ^:private regular-key [key-codes]
   (when (= (count key-codes) 1)
     {:event :keypress
      :value (-> key-codes first char str)}))
@@ -80,7 +80,7 @@
       {:event :cursor-position :value [line column]})))
 
 (defn key-codes->event [key-codes]
-  (or (special-char key-codes)
-      (regular-char key-codes)
+  (or (special-key key-codes)
+      (regular-key key-codes)
       (device-status-report key-codes)
       {:event :unknown :value key-codes}))

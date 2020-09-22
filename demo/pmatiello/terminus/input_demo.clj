@@ -8,18 +8,23 @@
   (println event)
   (when (-> event :value #{:f12})
     (print cursor/current-position)
-    (flush)))
+    (flush))
+  (when (-> event :value #{:eot})
+    (throw (ex-info "Interrupted" {}))))
 
 (defn -main []
   (println "Start typing.")
-  (println "Enter Ctrl+C to quit.")
-  (println "Current line settings:" (stty/current))
-  (try
-    (sh "/bin/sh" "-c" "stty -icanon -echo < /dev/tty")
-    (println "Current line settings:" (stty/current))
-    (->> *in*
-         input/reader->event-seq
-         (mapv handle))
-    (finally
-      (println "Done.")
-      (sh "/bin/sh" "-c" "stty icanon echo < /dev/tty"))))
+  (println "Enter Ctrl+D to quit.")
+  (let [initial-stty (stty/current)]
+    (println "Initial line settings:" (stty/current))
+    (try
+      (sh "/bin/sh" "-c" "stty -icanon -echo < /dev/tty")
+      (println "Current line settings:" (stty/current))
+      (->> *in*
+           input/reader->event-seq
+           (mapv handle))
+      (catch Exception e
+        (println (.getMessage e)))
+      (finally
+        (stty/apply! initial-stty)
+        (println "Final line settings:" (stty/current))))))

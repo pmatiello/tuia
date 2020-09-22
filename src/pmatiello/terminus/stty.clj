@@ -20,3 +20,14 @@
                        (map #(string/join "=" %))
                        (string/join ":"))]
     (sh "/bin/sh" "-c" (str "stty " stty-args " < /dev/tty"))))
+
+(defn set-flags! [& flags]
+  (let [stty-args (->> flags (map name) (string/join " "))]
+    (sh "/bin/sh" "-c" (str "stty " stty-args " < /dev/tty"))))
+
+(defn unset-flags! [& flags]
+  (let [stty-args (->> flags
+                       (map name)
+                       (map #(string/replace % #"^" "-"))
+                       (string/join " "))]
+    (sh "/bin/sh" "-c" (str "stty " stty-args " < /dev/tty"))))

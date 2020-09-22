@@ -1,7 +1,7 @@
-(ns clj-ansi.input-demo
+(ns pmatiello.terminus.ansi.input-demo
   (:require [clojure.java.shell :refer [sh]]
-            [clj-ansi.input :as input]
-            [clj-ansi.cursor :as cursor]))
+            [pmatiello.terminus.ansi.input :as input]
+            [pmatiello.terminus.ansi.cursor :as cursor]))
 
 (defn handle [event]
   (println event)

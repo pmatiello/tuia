@@ -1,5 +1,5 @@
-(ns clj-ansi.input
-  (:require [clj-ansi.internal.input-parsing :as input-parsing])
+(ns pmatiello.terminus.ansi.input
+  (:require [pmatiello.terminus.ansi.internal.input-parsing :as input-parsing])
   (:import (java.io Reader)))
 
 (defn reader->event-seq [^Reader reader]

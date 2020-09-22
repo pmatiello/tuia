@@ -1,9 +1,7 @@
-(ns clj-ansi.internal.input
+(ns clj-ansi.internal.input-event
   (:require [clojure.string :as str]))
 
-(def state (atom {}))
-
-(def ^:private control-chars
+(def ^:private control-keys
   {0   :nul
    1   :soh
    2   :stx
@@ -38,7 +36,7 @@
    31  :us
    127 :del})
 
-(def ^:private escaped-chars
+(def ^:private escaped-keys
   {[27 91 65]        :up
    [27 91 66]        :down
    [27 91 67]        :right
@@ -61,27 +59,28 @@
    [27 91 50 51 126] :f11
    [27 91 50 52 126] :f12})
 
-(def ^:private special-chars
-  (merge (into {} (map (fn [[k v]] [[k] v]) control-chars))
-         escaped-chars))
+(def ^:private special-keys
+  (merge (into {} (map (fn [[k v]] [[k] v]) control-keys))
+         escaped-keys))
 
-(defn ^:private special-char [key-codes]
-  (get special-chars key-codes))
+(defn ^:private special-key [key-codes]
+  (if-let [key (get special-keys key-codes)]
+    {:event :keypress :value key}))
 
-(defn ^:private regular-char [key-codes]
+(defn ^:private regular-key [key-codes]
   (when (= (count key-codes) 1)
-    (-> key-codes first char str)))
+    {:event :keypress
+     :value (-> key-codes first char str)}))
 
 (defn ^:private device-status-report [key-codes]
   (when (and (= (take 2 key-codes) [27 91]) (= (last key-codes) 82))
     (let [pos-chars (->> key-codes (drop 2) drop-last)
           line      (->> pos-chars (take-while #(not= % 59)) (map char) str/join Integer/parseInt)
           column    (->> pos-chars (drop-while #(not= % 59)) (drop 1) (map char) str/join Integer/parseInt)]
-      (swap! state assoc :cursor-position [line column])
-      ::omit)))
+      {:event :cursor-position :value [line column]})))
 
-(defn key-codes->char [key-codes]
-  (or (special-char key-codes)
-      (regular-char key-codes)
+(defn key-codes->event [key-codes]
+  (or (special-key key-codes)
+      (regular-key key-codes)
       (device-status-report key-codes)
-      :unknown))
+      {:event :unknown :value key-codes}))

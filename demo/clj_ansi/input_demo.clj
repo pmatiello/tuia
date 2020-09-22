@@ -3,9 +3,9 @@
             [clj-ansi.input :as input]
             [clj-ansi.cursor :as cursor]))
 
-(defn handle [char]
-  (println char)
-  (when (= char :f12)
+(defn handle [event]
+  (println event)
+  (when (-> event :value #{:f12})
     (print cursor/current-position)
     (flush)))
 
@@ -15,8 +15,7 @@
   (try
     (sh "/bin/sh" "-c" "stty -icanon -echo < /dev/tty")
     (->> *in*
-         input/reader->input-seq
-         input/input-seq->char-seq
+         input/reader->event-seq
          (mapv handle))
     (println "Done.")
     (finally

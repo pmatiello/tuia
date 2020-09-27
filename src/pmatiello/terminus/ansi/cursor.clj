@@ -27,3 +27,9 @@
 
 (def current-position
   (ansi-seq "6n"))
+
+(def show
+  (ansi-seq "?25h"))
+
+(def hide
+  (ansi-seq "?25l"))

@@ -28,3 +28,9 @@
 
 (deftest current-position-test
   (is (= "\u001b[6n" cursor/current-position)))
+
+(deftest show
+  (is (= "\u001b[?25h" cursor/show)))
+
+(deftest hide
+  (is (= "\u001b[?25l" cursor/hide)))

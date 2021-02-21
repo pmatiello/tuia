@@ -1,4 +1,4 @@
-(ns pmatiello.terminus.stty
+(ns pmatiello.terminus.tty.stty
   (:require [clojure.java.shell :as shell]
             [clojure.string :as string]))
 

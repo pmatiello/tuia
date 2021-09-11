@@ -2,7 +2,6 @@
   (:require [clojure.java.shell :refer [sh]]
             [pmatiello.terminus.ansi.input :as input]
             [pmatiello.terminus.ansi.cursor :as cursor]
-            [pmatiello.terminus.tty.stty :as stty]
             [pmatiello.terminus.ansi.erase :as erase]
             [pmatiello.terminus.framework :as framework]
             [clojure.string :as str]))

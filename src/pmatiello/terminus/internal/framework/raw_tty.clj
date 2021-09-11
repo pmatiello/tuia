@@ -1,5 +1,5 @@
 (ns pmatiello.terminus.internal.framework.raw-tty
-  (:require [pmatiello.terminus.tty.stty :as stty]))
+  (:require [pmatiello.terminus.internal.tty.stty :as stty]))
 
 (defmacro with-raw-tty [& body]
   `(let [initial-stty# (stty/current)]

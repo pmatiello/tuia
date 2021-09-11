@@ -2,7 +2,7 @@
   (:require [clojure.test :refer :all]
             [mockfn.clj-test :as mfn]
             [pmatiello.terminus.framework :as framework]
-            [pmatiello.terminus.tty.stty :as stty]))
+            [pmatiello.terminus.internal.tty.stty :as stty]))
 
 (defn func [])
 

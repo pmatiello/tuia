@@ -7,3 +7,8 @@
 
 (def with-mainloop
   mainloop/with-mainloop)
+
+(defn new-tty-app
+  [handle-fn render-fn state input]
+  (raw-tty/with-raw-tty
+    (mainloop/with-mainloop handle-fn render-fn state input)))

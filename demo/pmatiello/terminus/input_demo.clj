@@ -3,7 +3,8 @@
             [pmatiello.terminus.ansi.cursor :as cursor]
             [pmatiello.terminus.ansi.erase :as erase]
             [pmatiello.terminus.framework :as framework]
-            [clojure.string :as str]))
+            [clojure.string :as str])
+  (:import (clojure.lang ExceptionInfo)))
 
 (def state (atom {:events '()}))
 
@@ -31,8 +32,12 @@
     (flush))
 
   (when (-> event :value #{:eot})
-    (throw (ex-info "Interrupted" {}))))
+    (throw (ex-info "Interrupted" {:cause :interrupted}))))
 
 (defn -main []
-  (framework/with-raw-tty
-    (framework/with-mainloop handle render state *in*)))
+  (try
+    (framework/new-tty-app handle render state *in*)
+    (catch ExceptionInfo ex
+      (if (-> ex ex-data :cause #{:interrupted})
+        (System/exit 0)
+        (throw ex)))))

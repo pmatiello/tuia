@@ -1,8 +1,8 @@
-(ns pmatiello.terminus.ansi.graphic-demo
+(ns pmatiello.terminus.graphics-demo
   (:require [clojure.test :refer :all]
-            [pmatiello.terminus.ansi.graphics :as graphics]))
+            [pmatiello.terminus.internal.ansi.graphics :as graphics]))
 
-(defn -main []
+(defn ^:deprecated -main []
   (println (str graphics/bold "bold" graphics/weight-off))
 
   (println (str graphics/underline "underline" graphics/underline-off))

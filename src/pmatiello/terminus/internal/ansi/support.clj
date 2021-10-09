@@ -1,4 +1,4 @@
-(ns pmatiello.terminus.ansi.internal.output)
+(ns pmatiello.terminus.internal.ansi.support)
 
 (def ^:private csi "\u001b[")
 

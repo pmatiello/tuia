@@ -1,7 +1,7 @@
 (ns pmatiello.terminus.input-demo
   (:require [clojure.java.shell :refer [sh]]
-            [pmatiello.terminus.ansi.cursor :as cursor]
-            [pmatiello.terminus.ansi.erase :as erase]
+            [pmatiello.terminus.internal.ansi.cursor :as cursor]
+            [pmatiello.terminus.internal.ansi.erase :as erase]
             [pmatiello.terminus.framework :as framework]
             [clojure.string :as str])
   (:import (clojure.lang ExceptionInfo)))

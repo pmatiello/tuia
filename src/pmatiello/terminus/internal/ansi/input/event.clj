@@ -1,4 +1,4 @@
-(ns pmatiello.terminus.ansi.internal.input-event
+(ns pmatiello.terminus.internal.ansi.input.event
   (:require [clojure.string :as str]))
 
 (def ^:private control-keys

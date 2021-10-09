@@ -1,6 +1,6 @@
-(ns pmatiello.terminus.ansi.erase-test
+(ns pmatiello.terminus.internal.ansi.erase-test
   (:require [clojure.test :refer :all]
-            [pmatiello.terminus.ansi.erase :as erase]))
+            [pmatiello.terminus.internal.ansi.erase :as erase]))
 
 (deftest below-test
   (is (= "\u001b[0J" erase/below)))

@@ -1,5 +1,5 @@
-(ns pmatiello.terminus.ansi.internal.input-parsing
-  (:require [pmatiello.terminus.ansi.internal.input-event :as input-event])
+(ns pmatiello.terminus.internal.ansi.input.parsing
+  (:require [pmatiello.terminus.internal.ansi.input.event :as input.event])
   (:import (java.io Reader)))
 
 (defn ^:private starting-escape-sequence? [key]
@@ -39,7 +39,7 @@
   (->> input-seq
        with-grouped-escape-seqs
        (map key->key-codes)
-       (map input-event/key-codes->event)))
+       (map input.event/key-codes->event)))
 
 (defn reader->input-seq [^Reader reader]
   (lazy-seq

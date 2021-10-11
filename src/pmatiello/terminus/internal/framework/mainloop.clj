@@ -1,5 +1,5 @@
 (ns pmatiello.terminus.internal.framework.mainloop
-  (:require [pmatiello.terminus.ansi.input :as input]))
+  (:require [pmatiello.terminus.internal.ansi.input :as input]))
 
 (defn with-mainloop
   [handle-fn render-fn state input]

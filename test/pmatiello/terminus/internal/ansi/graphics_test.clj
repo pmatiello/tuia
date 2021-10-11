@@ -1,6 +1,6 @@
-(ns pmatiello.terminus.ansi.graphics-test
+(ns pmatiello.terminus.internal.ansi.graphics-test
   (:require [clojure.test :refer :all]
-            [pmatiello.terminus.ansi.graphics :as graphics]))
+            [pmatiello.terminus.internal.ansi.graphics :as graphics]))
 
 (deftest reset-test
   (is (= "\u001b[0m" graphics/reset)))

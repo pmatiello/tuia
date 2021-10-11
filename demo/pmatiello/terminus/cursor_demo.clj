@@ -1,7 +1,7 @@
-(ns pmatiello.terminus.ansi.cursor-demo
-  (:require [pmatiello.terminus.ansi.cursor :as cursor]))
+(ns pmatiello.terminus.cursor-demo
+  (:require [pmatiello.terminus.internal.ansi.cursor :as cursor]))
 
-(defn -main []
+(defn ^:deprecated -main []
   (print "First line")
   (print (cursor/next-line 2))
   (print "Two lines from the first")

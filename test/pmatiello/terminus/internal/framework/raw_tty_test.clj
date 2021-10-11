@@ -22,4 +22,7 @@
     (mfn/providing
       (stty/current) 'stty-current)
     (mfn/verifying
-      (stty/apply! 'stty-current) nil (mockfn.matchers/exactly 1))))
+      (stty/apply! 'stty-current) nil (mockfn.matchers/exactly 1)))
+
+  (mfn/providing
+    (stty/apply! (mockfn.matchers/any)) nil))

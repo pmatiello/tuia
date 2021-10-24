@@ -1,5 +1,4 @@
-(ns pmatiello.terminus.internal.framework.mainloop
-  (:require [pmatiello.terminus.internal.ansi.input :as input]))
+(ns pmatiello.terminus.internal.framework.mainloop)
 
 (defn with-mainloop
   [handle-fn render-fn state input]
@@ -7,6 +6,6 @@
     (add-watch state ::state-changed (fn [_ _ old-state new-state]
                                        (render-fn old-state new-state)))
     (swap! state assoc ::init true)
-    (->> input input/reader->event-seq (mapv handle-fn))
+    (mapv handle-fn input)
     (finally
       (remove-watch state ::state-changed))))

@@ -6,14 +6,32 @@
             [pmatiello.terminus.internal.tty.stty :as stty])
   (:import (java.io StringWriter)))
 
+(defn- new-writer []
+  (StringWriter.))
+
 (defn func [])
 
-(mfn/deftest render-test
-  (let [output (StringWriter.)]
-    (io/render output {:x 3 :y 4 :w 5 :h 2} ["line1" "line2"])
-    (is (= (str (cursor/position 4 3) "line1"
-                (cursor/position 5 3) "line2")
-           (str output)))))
+(deftest render-test
+  (testing "renders buffer at location"
+    (let [output (new-writer)]
+      (io/render output {:x 3 :y 4 :w 5 :h 2} ["line1" "line2"])
+      (is (= (str (cursor/position 4 3) "line1"
+                  (cursor/position 5 3) "line2")
+             (str output)))))
+
+  (testing "renders only the given height"
+    (let [output (new-writer)]
+      (io/render output {:x 3 :y 4 :w 5 :h 2} ["line1" "line2" "ignored"])
+      (is (= (str (cursor/position 4 3) "line1"
+                  (cursor/position 5 3) "line2")
+             (str output)))))
+
+  (testing "renders only the given width"
+    (let [output (new-writer)]
+      (io/render output {:x 3 :y 4 :w 5 :h 2} ["line1-ignored" "line2-ignored"])
+      (is (= (str (cursor/position 4 3) "line1"
+                  (cursor/position 5 3) "line2")
+             (str output))))))
 
 (mfn/deftest with-raw-tty-test
   (mfn/testing "runs given body"

@@ -3,10 +3,14 @@
             [pmatiello.terminus.internal.tty.stty :as stty])
   (:import (java.io Writer)))
 
+(defn- cropped [buffer width height]
+  (->> buffer (take height) (map #(subs % 0 width))))
+
 (defn render [^Writer output window buffer]
   (let [{:keys [x y w h]} window
-        indexed-buffer (map vector (range) buffer)]
-    (doseq [[offset ^String line] indexed-buffer]
+        cropped-buf (cropped buffer w h)
+        indexed-buf (map vector (range) cropped-buf)]
+    (doseq [[offset ^String line] indexed-buf]
       (.append output (str (cursor/position (+ y offset) x) line)))
     (.flush output)))
 

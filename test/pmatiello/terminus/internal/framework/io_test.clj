@@ -3,8 +3,11 @@
             [mockfn.clj-test :as mfn]
             [pmatiello.terminus.internal.ansi.cursor :as cursor]
             [pmatiello.terminus.internal.framework.io :as io]
-            [pmatiello.terminus.internal.tty.stty :as stty])
+            [pmatiello.terminus.internal.tty.stty :as stty]
+            [pmatiello.terminus.internal.fixtures :as fixtures])
   (:import (java.io StringWriter)))
+
+(use-fixtures :each fixtures/with-readable-csi)
 
 (defn- new-writer []
   (StringWriter.))

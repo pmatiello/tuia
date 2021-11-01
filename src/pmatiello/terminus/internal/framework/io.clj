@@ -3,8 +3,19 @@
             [pmatiello.terminus.internal.tty.stty :as stty])
   (:import (java.io Writer)))
 
+(defn- cropped-height [height buffer]
+  (let [blank (repeat height "")]
+    (->> (concat buffer blank)
+         (take height))))
+
+(defn- cropped-width [width buffer-line]
+  (let [blank (->> " " (repeat width) (apply str))]
+    (-> buffer-line (str blank) (subs 0 width))))
+
 (defn- cropped [buffer width height]
-  (->> buffer (take height) (map #(subs % 0 width))))
+  (->> buffer
+       (cropped-height height)
+       (map #(cropped-width width %))))
 
 (defn render [^Writer output window buffer]
   (let [{:keys [x y w h]} window

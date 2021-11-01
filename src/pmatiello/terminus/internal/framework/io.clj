@@ -1,4 +1,4 @@
-(ns pmatiello.terminus.internal.framework.raw-tty
+(ns pmatiello.terminus.internal.framework.io
   (:require [pmatiello.terminus.internal.tty.stty :as stty]))
 
 (defn with-raw-tty [func]

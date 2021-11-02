@@ -36,7 +36,7 @@
 
 (defn -main []
   (try
-    (framework/new-tty-app handle render state *in*)
+    (framework/new-tty-app handle render state)
     (catch ExceptionInfo ex
       (if (-> ex ex-data :cause #{:interrupted})
         (System/exit 0)

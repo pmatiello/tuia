@@ -1,5 +1,6 @@
 (ns pmatiello.terminus.internal.framework.io
   (:require [pmatiello.terminus.internal.ansi.cursor :as cursor]
+            [pmatiello.terminus.internal.ansi.erase :as erase]
             [pmatiello.terminus.internal.tty.stty :as stty])
   (:import (java.io Writer)))
 
@@ -25,6 +26,10 @@
       (doseq [[offset ^String line] indexed-buf]
         (.append output (str (cursor/position (+ y offset) x) line)))
       (.flush output))))
+
+(defn clear-screen! [^Writer output]
+  (.append output (str erase/all (cursor/position 1 1)))
+  (.flush output))
 
 (defn with-raw-tty [func]
   (let [initial-stty (stty/current)]

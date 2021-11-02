@@ -17,7 +17,7 @@
        (cropped-height height)
        (map #(cropped-width width %))))
 
-(defn render [^Writer output window buffer]
+(defn print! [^Writer output window buffer]
   (locking output
     (let [{:keys [x y w h]} window
           cropped-buf (cropped buffer w h)

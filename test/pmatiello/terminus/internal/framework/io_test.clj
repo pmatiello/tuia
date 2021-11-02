@@ -2,9 +2,11 @@
   (:require [clojure.test :refer :all]
             [mockfn.clj-test :as mfn]
             [pmatiello.terminus.internal.ansi.cursor :as cursor]
+            [pmatiello.terminus.internal.ansi.erase :as erase]
             [pmatiello.terminus.internal.framework.io :as io]
             [pmatiello.terminus.internal.tty.stty :as stty]
-            [pmatiello.terminus.internal.fixtures :as fixtures])
+            [pmatiello.terminus.internal.fixtures :as fixtures]
+            [clojure.string :as string])
   (:import (java.io StringWriter)))
 
 (use-fixtures :each fixtures/with-readable-csi)
@@ -50,6 +52,17 @@
                   (cursor/position 5 3) "line2"
                   (cursor/position 6 3) "     ")
              (str output))))))
+
+(deftest clear-screen!-test
+  (testing "clears screen"
+    (let [output (new-writer)]
+      (io/clear-screen! output)
+      (is (string/includes? (str output) erase/all))))
+
+  (testing "moves cursor to top left"
+    (let [output (new-writer)]
+      (io/clear-screen! output)
+      (is (string/includes? (str output) (cursor/position 1 1))))))
 
 (mfn/deftest with-raw-tty-test
   (mfn/testing "runs given body"

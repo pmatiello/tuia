@@ -17,35 +17,35 @@
 (deftest print!-test
   (testing "prints buffer at location"
     (let [output (new-writer)]
-      (io/print! output {:x 3 :y 4 :w 5 :h 2} ["line1" "line2"])
+      (io/print! output ["line1" "line2"] {:x 3 :y 4 :w 5 :h 2})
       (is (= (str (cursor/position 4 3) "line1"
                   (cursor/position 5 3) "line2")
              (str output)))))
 
   (testing "prints only the given height"
     (let [output (new-writer)]
-      (io/print! output {:x 3 :y 4 :w 5 :h 2} ["line1" "line2" "ignored"])
+      (io/print! output ["line1" "line2" "ignored"] {:x 3 :y 4 :w 5 :h 2})
       (is (= (str (cursor/position 4 3) "line1"
                   (cursor/position 5 3) "line2")
              (str output)))))
 
   (testing "prints only the given width"
     (let [output (new-writer)]
-      (io/print! output {:x 3 :y 4 :w 5 :h 2} ["line1-ignored" "line2-ignored"])
+      (io/print! output ["line1-ignored" "line2-ignored"] {:x 3 :y 4 :w 5 :h 2})
       (is (= (str (cursor/position 4 3) "line1"
                   (cursor/position 5 3) "line2")
              (str output)))))
 
   (testing "fills missing width in buffer with blank space"
     (let [output (new-writer)]
-      (io/print! output {:x 3 :y 4 :w 8 :h 2} ["line1" "line2"])
+      (io/print! output ["line1" "line2"] {:x 3 :y 4 :w 8 :h 2})
       (is (= (str (cursor/position 4 3) "line1   "
                   (cursor/position 5 3) "line2   ")
              (str output)))))
 
   (testing "fills missing height in buffer with blank space"
     (let [output (new-writer)]
-      (io/print! output {:x 3 :y 4 :w 5 :h 3} ["line1" "line2"])
+      (io/print! output ["line1" "line2"] {:x 3 :y 4 :w 5 :h 3})
       (is (= (str (cursor/position 4 3) "line1"
                   (cursor/position 5 3) "line2"
                   (cursor/position 6 3) "     ")

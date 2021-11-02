@@ -64,6 +64,18 @@
       (io/clear-screen! output)
       (is (string/includes? (str output) (cursor/position 1 1))))))
 
+(deftest show-cursor!-test
+  (testing "shows input cursor"
+    (let [output (new-writer)]
+      (io/show-cursor! output)
+      (is (= cursor/show (str output))))))
+
+(deftest show-cursor!-test
+  (testing "shows input cursor"
+    (let [output (new-writer)]
+      (io/hide-cursor! output)
+      (is (= cursor/hide (str output))))))
+
 (mfn/deftest with-raw-tty-test
   (mfn/testing "runs given body"
     (io/with-raw-tty func)

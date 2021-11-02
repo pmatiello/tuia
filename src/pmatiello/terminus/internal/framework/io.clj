@@ -31,6 +31,14 @@
   (.append output (str erase/all (cursor/position 1 1)))
   (.flush output))
 
+(defn show-cursor! [^Writer output]
+  (.append output (str cursor/show))
+  (.flush output))
+
+(defn hide-cursor! [^Writer output]
+  (.append output (str cursor/hide))
+  (.flush output))
+
 (defn with-raw-tty [func]
   (let [initial-stty (stty/current)]
     (try

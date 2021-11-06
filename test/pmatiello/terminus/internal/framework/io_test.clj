@@ -76,6 +76,12 @@
       (io/hide-cursor! output)
       (is (= cursor/hide (str output))))))
 
+(deftest place-cursor!-test
+  (testing "moves cursor to given position"
+    (let [output (new-writer)]
+      (io/place-cursor! output 5 10)
+      (is (= (str output) (cursor/position 5 10))))))
+
 (mfn/deftest with-raw-tty-test
   (mfn/testing "runs given body"
     (io/with-raw-tty func)

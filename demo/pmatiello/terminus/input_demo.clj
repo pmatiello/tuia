@@ -19,7 +19,8 @@
     (io/hide-cursor! *out*)
     (io/print! *out* header {:x 1 :y 1 :w 23 :h 3}))
 
-  (io/print! *out* (:events new-state) {:x 1 :y 5 :w 40 :h 6}))
+  (io/print! *out* (:events new-state) {:x 1 :y 5 :w 40 :h 6})
+  (io/place-cursor! *out* 10 1))
 
 (defn handle [event]
   (swap! state assoc :events

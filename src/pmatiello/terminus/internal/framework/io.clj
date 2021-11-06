@@ -39,6 +39,10 @@
   (.append output (str cursor/hide))
   (.flush output))
 
+(defn place-cursor! [^Writer output line column]
+  (.append output (str (cursor/position line column)))
+  (.flush output))
+
 (defn with-raw-tty [func]
   (let [initial-stty (stty/current)]
     (try
@@ -46,3 +50,4 @@
       (func)
       (finally
         (stty/apply! initial-stty)))))
+

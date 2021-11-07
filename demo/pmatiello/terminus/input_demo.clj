@@ -1,8 +1,8 @@
 (ns pmatiello.terminus.input-demo
-  (:require [clojure.java.shell :refer [sh]]
-            [pmatiello.terminus.internal.ansi.cursor :as cursor]
-            [pmatiello.terminus.internal.ansi.erase :as erase]
+  (:require [pmatiello.terminus.internal.ansi.cursor :as cursor]
             [pmatiello.terminus.framework :as framework]
+            [pmatiello.terminus.internal.framework.io :as io]
+            [pmatiello.terminus.internal.framework.mainloop :as mainloop]
             [clojure.string :as str])
   (:import (clojure.lang ExceptionInfo)))
 
@@ -11,25 +11,24 @@
 (def header
   ["input-demo ------------"
    "Type to produce events."
-   "Enter Ctrl+D to quit."
-   ""])
+   "Enter Ctrl+D to quit."])
 
-(defn println-all [lines]
-  (println (str/join "\n" lines)))
+(defn render [old-state new-state]
+  (when-not (::mainloop/init old-state)
+    (io/clear-screen! *out*)
+    (io/hide-cursor! *out*)
+    (io/print! *out* header {:x 1 :y 1 :w 23 :h 3}))
 
-(defn render [_old-state new-state]
-  (print erase/all (cursor/position 1 1))
-  (println-all header)
-  (println-all (:events new-state))
-  (flush))
+  (io/print! *out* (:events new-state) {:x 1 :y 5 :w 40 :h 6})
+  (io/place-cursor! *out* 10 1))
 
 (defn handle [event]
   (swap! state assoc :events
          (->> event (conj (:events @state)) (take 5)))
 
   (when (-> event :value #{:f12})
-    (print cursor/current-position)
-    (flush))
+    (.append *out* cursor/current-position)
+    (.flush *out*))
 
   (when (-> event :value #{:eot})
     (throw (ex-info "Interrupted" {:cause :interrupted}))))
@@ -38,6 +37,7 @@
   (try
     (framework/new-tty-app handle render state)
     (catch ExceptionInfo ex
+      (io/show-cursor! *out*)
       (if (-> ex ex-data :cause #{:interrupted})
         (System/exit 0)
         (throw ex)))))

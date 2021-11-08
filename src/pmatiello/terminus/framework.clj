@@ -7,8 +7,8 @@
 (defn new-tty-app
   [handle-fn render-fn state]
   (let [input (input/reader->event-seq *in*)
-        output *out*]
+        output! (partial io/write! *out*)]
     (with-redefs
       [*out* (Writer/nullWriter)]
       (io/with-raw-tty
-        #(mainloop/with-mainloop handle-fn render-fn state input output)))))
+        #(mainloop/with-mainloop handle-fn render-fn state input output!)))))

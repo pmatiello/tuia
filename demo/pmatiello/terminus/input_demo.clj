@@ -24,7 +24,7 @@
     (io/print! output [cursor/current-position] {:x 1 :y 10 :w 4 :h 5}))
 
   (io/print! output (:events new-state) {:x 1 :y 5 :w 40 :h 6})
-  (io/place-cursor! output 10 1))
+  (io/place-cursor! output {:x 1 :y 10}))
 
 (defn handle [event]
   (swap! state assoc :events
@@ -38,10 +38,10 @@
 
 (defn -main []
   (try
-    (io/hide-cursor! *out*)
+    (->> (atom []) io/hide-cursor! (io/write! *out*))
     (framework/new-tty-app handle render state)
     (catch ExceptionInfo ex
-      (io/show-cursor! *out*)
+      (->> (atom []) io/show-cursor! (io/write! *out*))
       (if (-> ex ex-data :cause #{:interrupted})
         (System/exit 0)
         (throw ex)))))

@@ -4,6 +4,11 @@
             [pmatiello.terminus.internal.tty.stty :as stty])
   (:import (java.io Writer)))
 
+(defn write! [^Writer writer payload]
+  (doseq [^String each payload]
+    (.append writer each))
+  (.flush writer))
+
 (defn- cropped-height [height buffer]
   (let [blank (repeat height "")]
     (->> (concat buffer blank)
@@ -18,34 +23,29 @@
        (cropped-height height)
        (map #(cropped-width width %))))
 
-(defn print! [^Writer output buffer window]
-  (locking output
-    (let [{:keys [x y w h]} window
-          cropped-buf (cropped buffer w h)
-          indexed-buf (map vector (range) cropped-buf)]
-      (doseq [[offset ^String line] indexed-buf]
-        (.append output (str (cursor/position (+ y offset) x) line)))
-      (.flush output))))
+(defn- into-output! [output each]
+  (swap! output conj each))
 
-(defn clear-screen! [^Writer output]
-  (locking output
-    (.append output (str erase/all (cursor/position 1 1)))
-    (.flush output)))
+(defn print! [output lines window]
+  (let [{:keys [x y w h]} window
+        cropped-lines (cropped lines w h)
+        indexed-lines (map vector (range) cropped-lines)]
+    (doseq [[offset ^String line] indexed-lines]
+      (into-output! output (str (cursor/position (+ y offset) x) line)))))
 
-(defn show-cursor! [^Writer output]
-  (locking output
-    (.append output (str cursor/show))
-    (.flush output)))
+(defn clear-screen! [output]
+  (into-output! output erase/all)
+  (into-output! output (cursor/position 1 1)))
 
-(defn hide-cursor! [^Writer output]
-  (locking output
-    (.append output (str cursor/hide))
-    (.flush output)))
+(defn show-cursor! [output]
+  (into-output! output cursor/show))
 
-(defn place-cursor! [^Writer output line column]
-  (locking output
-    (.append output (str (cursor/position line column)))
-    (.flush output)))
+(defn hide-cursor! [output]
+  (into-output! output cursor/hide))
+
+(defn place-cursor! [output coords]
+  (let [{:keys [x y]} coords]
+    (into-output! output (cursor/position y x))))
 
 (defn with-raw-tty [func]
   (let [initial-stty (stty/current)]

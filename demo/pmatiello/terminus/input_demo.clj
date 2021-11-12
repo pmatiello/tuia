@@ -1,6 +1,6 @@
 (ns pmatiello.terminus.input-demo
   (:require [pmatiello.terminus.internal.ansi.cursor :as cursor]
-            [pmatiello.terminus.framework :as framework]
+            [pmatiello.terminus.core :as tty]
             [pmatiello.terminus.internal.framework.io :as io]
             [pmatiello.terminus.internal.framework.mainloop :as mainloop]
             [clojure.string :as str])
@@ -39,7 +39,7 @@
 (defn -main []
   (try
     (->> (atom []) io/hide-cursor! (io/write! *out*))
-    (framework/new-tty-app handle render state)
+    (tty/new-tty-app handle render state)
     (catch ExceptionInfo ex
       (->> (atom []) io/show-cursor! (io/write! *out*))
       (if (-> ex ex-data :cause #{:interrupted})

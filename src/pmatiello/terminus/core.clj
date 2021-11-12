@@ -1,4 +1,4 @@
-(ns pmatiello.terminus.framework
+(ns pmatiello.terminus.core
   (:require [pmatiello.terminus.internal.ansi.input :as input]
             [pmatiello.terminus.internal.framework.io :as io]
             [pmatiello.terminus.internal.framework.mainloop :as mainloop])

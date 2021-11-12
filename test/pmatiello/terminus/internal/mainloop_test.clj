@@ -1,6 +1,6 @@
-(ns pmatiello.terminus.internal.framework.mainloop-test
+(ns pmatiello.terminus.internal.mainloop-test
   (:require [clojure.test :refer :all]
-            [pmatiello.terminus.internal.framework.mainloop :as mainloop]
+            [pmatiello.terminus.internal.mainloop :as mainloop]
             [mockfn.clj-test :as mfn]
             [mockfn.matchers :as mfn.matchers])
   (:import (clojure.lang Atom)))

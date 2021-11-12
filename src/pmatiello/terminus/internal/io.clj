@@ -1,7 +1,7 @@
-(ns pmatiello.terminus.internal.framework.io
+(ns pmatiello.terminus.internal.io
   (:require [pmatiello.terminus.internal.ansi.cursor :as cursor]
             [pmatiello.terminus.internal.ansi.erase :as erase]
-            [pmatiello.terminus.internal.tty.stty :as stty])
+            [pmatiello.terminus.internal.stty :as stty])
   (:import (java.io Writer)))
 
 (defn write! [^Writer writer payload]

@@ -1,10 +1,10 @@
-(ns pmatiello.terminus.internal.framework.io-test
+(ns pmatiello.terminus.internal.io-test
   (:require [clojure.test :refer :all]
             [mockfn.clj-test :as mfn]
             [pmatiello.terminus.internal.ansi.cursor :as cursor]
             [pmatiello.terminus.internal.ansi.erase :as erase]
-            [pmatiello.terminus.internal.framework.io :as io]
-            [pmatiello.terminus.internal.tty.stty :as stty]
+            [pmatiello.terminus.internal.io :as io]
+            [pmatiello.terminus.internal.stty :as stty]
             [pmatiello.terminus.internal.fixtures :as fixtures]
             [clojure.string :as string])
   (:import (java.io StringWriter)))

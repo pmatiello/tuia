@@ -1,7 +1,9 @@
-(ns pmatiello.terminus.internal.framework.mainloop)
+(ns pmatiello.terminus.internal.mainloop)
 
 (defn- render-output! [render-fn output! old-state new-state]
-  (-> (atom []) (render-fn old-state new-state) output!))
+  (let [output (atom [])]
+    (render-fn output old-state new-state)
+    (output! @output)))
 
 (defn with-mainloop
   [handle-fn render-fn state input output!]

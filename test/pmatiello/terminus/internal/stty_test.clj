@@ -1,8 +1,8 @@
-(ns pmatiello.terminus.internal.tty.stty-test
+(ns pmatiello.terminus.internal.stty-test
   (:require [clojure.test :refer :all]
             [mockfn.clj-test :as mfn]
             [mockfn.matchers :as mfn.matchers]
-            [pmatiello.terminus.internal.tty.stty :as stty]
+            [pmatiello.terminus.internal.stty :as stty]
             [clojure.java.shell :refer [sh]])
   (:import (clojure.lang ExceptionInfo)))
 

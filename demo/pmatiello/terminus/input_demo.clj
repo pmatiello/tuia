@@ -24,7 +24,8 @@
     (tty.io/print! output [cursor/current-position] {:x 1 :y 10 :w 4 :h 5}))
 
   (tty.io/print! output (:events new-state) {:x 1 :y 5 :w 40 :h 6})
-  (tty.io/place-cursor! output {:x 1 :y 10}))
+  (tty.io/place-cursor! output {:x 1 :y 10})
+  nil)
 
 (defn handle [event]
   (swap! state assoc :events

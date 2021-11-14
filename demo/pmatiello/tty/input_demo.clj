@@ -1,9 +1,7 @@
 (ns pmatiello.tty.input-demo
   (:require [pmatiello.tty.internal.ansi.cursor :as cursor]
             [pmatiello.tty :as tty]
-            [pmatiello.tty.io :as tty.io]
-            [pmatiello.tty.internal.io :as tty.internal.io]
-            [pmatiello.tty.internal.mainloop :as mainloop])
+            [pmatiello.tty.io :as tty.io])
   (:import (clojure.lang ExceptionInfo)))
 
 (def state
@@ -16,9 +14,13 @@
    "Enter Ctrl+D to quit."])
 
 (defn render [output old-state new-state]
-  (when-not (::mainloop/init old-state)
+  (when-not (::tty/init old-state)
+    (tty.io/hide-cursor! output)
     (tty.io/clear-screen! output)
     (tty.io/print! output header {:x 1 :y 1 :w 23 :h 3}))
+
+  (when (::tty/halt new-state)
+    (tty.io/show-cursor! output))
 
   (when (not= (:curr-pos? old-state) (:curr-pos? new-state))
     (tty.io/print! output [cursor/current-position] {:x 1 :y 10 :w 4 :h 5}))
@@ -39,10 +41,8 @@
 
 (defn -main []
   (try
-    (->> (atom []) tty.io/hide-cursor! (tty.internal.io/write! *out*))
     (tty/init! handle render state)
     (catch ExceptionInfo ex
-      (->> (atom []) tty.io/show-cursor! (tty.internal.io/write! *out*))
       (if (-> ex ex-data :cause #{:interrupted})
         (System/exit 0)
         (throw ex)))))

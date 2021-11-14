@@ -1,6 +1,6 @@
 (ns pmatiello.tty.input-demo
   (:require [pmatiello.tty.internal.ansi.cursor :as cursor]
-            [pmatiello.tty.core :as tty]
+            [pmatiello.tty :as tty]
             [pmatiello.tty.io :as tty.io]
             [pmatiello.tty.internal.io :as tty.internal.io]
             [pmatiello.tty.internal.mainloop :as mainloop])

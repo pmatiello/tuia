@@ -36,7 +36,7 @@
       (handle-fn 'ev1) nil (mfn.matchers/exactly 1)
       (handle-fn 'ev2) nil (mfn.matchers/exactly 1))
     (mfn/providing
-      (render-fn (anything?) (anything?) (anything?)) 'irrelevant))
+      (render-fn mfn.matchers/any-args?) 'irrelevant))
 
   (mfn/testing "invokes the render function on each change to the state atom"
     (let [state (atom {})

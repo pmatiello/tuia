@@ -40,7 +40,7 @@
 (defn -main []
   (try
     (->> (atom []) tty.io/hide-cursor! (tty.internal.io/write! *out*))
-    (tty/new-tty-app handle render state)
+    (tty/init! handle render state)
     (catch ExceptionInfo ex
       (->> (atom []) tty.io/show-cursor! (tty.internal.io/write! *out*))
       (if (-> ex ex-data :cause #{:interrupted})

@@ -4,7 +4,7 @@
             [pmatiello.tty.internal.mainloop :as mainloop])
   (:import (java.io Writer)))
 
-(defn new-tty-app
+(defn init!
   [handle-fn render-fn state]
   (let [input (input/reader->event-seq *in*)
         output! (partial io/write! *out*)]

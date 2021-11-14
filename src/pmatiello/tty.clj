@@ -1,4 +1,4 @@
-(ns pmatiello.tty.core
+(ns pmatiello.tty
   (:require [pmatiello.tty.internal.ansi.input :as input]
             [pmatiello.tty.internal.io :as io]
             [pmatiello.tty.internal.mainloop :as mainloop])

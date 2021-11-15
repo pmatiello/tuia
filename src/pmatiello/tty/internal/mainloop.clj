@@ -1,26 +1,23 @@
 (ns pmatiello.tty.internal.mainloop)
 
-(defn- render-output! [render-fn output! old-state new-state]
-  (let [output (atom [])]
-    (render-fn output old-state new-state)
-    (output! @output)))
+(defn- watch-fn [render-fn output!]
+  (fn [_ _ old-state new-state]
+    (let [output (atom [])]
+      (render-fn output old-state new-state)
+      (output! @output))))
 
-(defn- notify-init! [state]
-  (swap! state assoc :pmatiello.tty/init true))
-
-(defn- notify-halt! [state]
-  (swap! state assoc :pmatiello.tty/halt true))
+(defn- notify! [state event]
+  (swap! state assoc event true))
 
 (defn with-mainloop
   [handle-fn render-fn state input output!]
   (try
-    (add-watch state
-               ::state-changed
-               (fn [_ _ old-state new-state]
-                 (render-output! render-fn output! old-state new-state)))
+    (add-watch state ::state-changed (watch-fn render-fn output!))
+    (notify! state :pmatiello.tty/init)
 
-    (notify-init! state)
-    (mapv handle-fn input)
+    (doseq [event input]
+      (handle-fn event))
+
     (finally
-      (notify-halt! state)
+      (notify! state :pmatiello.tty/halt)
       (remove-watch state ::state-changed))))

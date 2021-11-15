@@ -1,10 +1,10 @@
-(ns pmatiello.tty.core
+(ns pmatiello.tty
   (:require [pmatiello.tty.internal.ansi.input :as input]
             [pmatiello.tty.internal.io :as io]
             [pmatiello.tty.internal.mainloop :as mainloop])
   (:import (java.io Writer)))
 
-(defn new-tty-app
+(defn init!
   [handle-fn render-fn state]
   (let [input (input/reader->event-seq *in*)
         output! (partial io/write! *out*)]

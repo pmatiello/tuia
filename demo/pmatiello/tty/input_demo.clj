@@ -1,20 +1,22 @@
 (ns pmatiello.tty.input-demo
-  (:require [pmatiello.tty.internal.ansi.cursor :as cursor]
-            [pmatiello.tty :as tty]
+  (:require [pmatiello.tty :as tty]
             [pmatiello.tty.io :as tty.io])
   (:import (clojure.lang ExceptionInfo)))
 
-(def state
-  (atom {:events    '()
-         :curr-pos? 0}))
+(def ^:private state
+  (atom {:events '()}))
 
-(def header
+(def ^:private header
   ["input-demo ------------"
    "Type to produce events."
    "Enter Ctrl+D to quit."])
 
-(defn render [output old-state new-state]
-  (when-not (::tty/init old-state)
+(defn- full-render? [old new]
+  (or (nil? (::tty/init old))
+      (not= (::tty/size old) (::tty/size new))))
+
+(defn- render [output old-state new-state]
+  (when (full-render? old-state new-state)
     (tty.io/hide-cursor! output)
     (tty.io/clear-screen! output)
     (tty.io/print! output header {:x 1 :y 1 :w 23 :h 3}))
@@ -22,19 +24,12 @@
   (when (::tty/halt new-state)
     (tty.io/show-cursor! output))
 
-  (when (not= (:curr-pos? old-state) (:curr-pos? new-state))
-    (tty.io/print! output [cursor/current-position] {:x 1 :y 10 :w 4 :h 5}))
-
   (tty.io/print! output (:events new-state) {:x 1 :y 5 :w 45 :h 6})
-  (tty.io/place-cursor! output {:x 1 :y 10})
-  nil)
+  (tty.io/place-cursor! output {:x 1 :y 10}))
 
 (defn handle [event]
   (swap! state assoc :events
          (->> event (conj (:events @state)) (take 5)))
-
-  (when (-> event :value #{:f12})
-    (swap! state update-in [:curr-pos?] inc))
 
   (when (-> event :value #{:eot})
     (throw (ex-info "Interrupted" {:cause :interrupted}))))

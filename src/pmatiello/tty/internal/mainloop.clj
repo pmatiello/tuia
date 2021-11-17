@@ -12,9 +12,9 @@
   (locking handle-fn
     (handle-fn event)))
 
-(defn- notify! [handle-fn state event]
-  (call-sync! handle-fn {:event event :value true})
-  (swap! state assoc event true))
+(defn- notify! [handle-fn state event value]
+  (call-sync! handle-fn {:event event :value value})
+  (swap! state assoc event value))
 
 (defn- tty-size?! [output! _signal]
   (output! [(cursor/position 9999 9999) cursor/current-position]))
@@ -23,14 +23,18 @@
   [handle-fn render-fn state input output!]
   (try
     (add-watch state ::state-changed (watch-fn render-fn output!))
-    (notify! handle-fn state :pmatiello.tty/init)
+    (notify! handle-fn state :pmatiello.tty/init true)
 
     (signal/trap :winch (partial tty-size?! output!))
     (tty-size?! output! nil)
 
     (doseq [event input]
-      (call-sync! handle-fn event))
+      (case (:event event)
+        :cursor-position
+        (notify! handle-fn state :pmatiello.tty/size (:value event))
+
+        (call-sync! handle-fn event)))
 
     (finally
-      (notify! handle-fn state :pmatiello.tty/halt)
+      (notify! handle-fn state :pmatiello.tty/halt true)
       (remove-watch state ::state-changed))))

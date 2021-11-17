@@ -82,7 +82,19 @@
       (mfn/verifying
         (signal/trap :winch function?!) nil (mfn.m/exactly 1)
         (output! [(cursor/position 9999 9999) cursor/current-position]) nil (mfn.m/exactly 2)
-        (output! mfn.m/any-args?) nil (mfn.m/any))))
+        (output! mfn.m/any-args?) nil (mfn.m/any)))
+
+    (mfn/testing "notifies the handler function on init/resize"
+      (let [state (atom {})]
+        (mainloop/with-mainloop handle-fn render-fn state [{:event :cursor-position :value [10 20]}] output!))
+      (mfn/verifying
+        (handle-fn {:event ::tty/size :value [10 20]}) nil (mfn.m/exactly 1)
+        (handle-fn mfn.m/any-args?) nil (mfn.m/any)))
+
+    (mfn/testing "updates the state atom on init/resize"
+      (let [state (atom {})]
+        (mainloop/with-mainloop handle-fn render-fn state [{:event :cursor-position :value [10 20]}] output!)
+        (is (= [10 20] (::tty/size @state))))))
 
   (mfn/providing
     (render-fn mfn.m/any-args?) nil

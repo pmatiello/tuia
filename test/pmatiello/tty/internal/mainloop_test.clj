@@ -67,13 +67,21 @@
         (render-fn output-buffer (mfn.m/any) {::tty/init true}) nil (mfn.m/any)
         (render-fn output-buffer (mfn.m/any) {::tty/init true ::tty/halt true}) nil (mfn.m/any))))
 
-  (mfn/testing "on window resize events"
-    (mfn/testing "request window dimensions"
+  (mfn/testing "on terminal dimensions"
+    (mfn/testing "request dimensions on initialization"
+      (let [state (atom {})]
+        (mainloop/with-mainloop handle-fn render-fn state [] output!))
+      (mfn/verifying
+        (signal/trap :winch fn?) nil (mfn.m/exactly 1)
+        (output! [(cursor/position 9999 9999) cursor/current-position]) nil (mfn.m/exactly 1)
+        (output! mfn.m/any-args?) nil (mfn.m/any)))
+
+    (mfn/testing "request dimensions on resize"
       (let [state (atom {})]
         (mainloop/with-mainloop handle-fn render-fn state [] output!))
       (mfn/verifying
         (signal/trap :winch function?!) nil (mfn.m/exactly 1)
-        (output! [(cursor/position 9999 9999) cursor/current-position]) nil (mfn.m/exactly 1)
+        (output! [(cursor/position 9999 9999) cursor/current-position]) nil (mfn.m/exactly 2)
         (output! mfn.m/any-args?) nil (mfn.m/any))))
 
   (mfn/providing

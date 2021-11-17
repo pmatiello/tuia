@@ -16,7 +16,7 @@
   (call-sync! handle-fn {:event event :value true})
   (swap! state assoc event true))
 
-(defn- on-sigwinch [output! _signal]
+(defn- tty-size?! [output! _signal]
   (output! [(cursor/position 9999 9999) cursor/current-position]))
 
 (defn with-mainloop
@@ -24,7 +24,9 @@
   (try
     (add-watch state ::state-changed (watch-fn render-fn output!))
     (notify! handle-fn state :pmatiello.tty/init)
-    (signal/trap :winch (partial on-sigwinch output!))
+
+    (signal/trap :winch (partial tty-size?! output!))
+    (tty-size?! output! nil)
 
     (doseq [event input]
       (call-sync! handle-fn event))

@@ -8,7 +8,7 @@
   (s/and #(instance? Atom %)
          #(-> % deref sequential?)))
 
-(s/def ::document (s/and vector? (s/coll-of ::paragraph)))
+(s/def ::document (s/and sequential? (s/coll-of ::paragraph)))
 (s/def ::paragraph string?)
 
 (s/def ::window

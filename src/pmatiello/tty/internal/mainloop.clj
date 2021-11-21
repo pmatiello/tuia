@@ -1,5 +1,6 @@
 (ns pmatiello.tty.internal.mainloop
-  (:require [pmatiello.tty.internal.signal :as signal]
+  (:require [pmatiello.tty.lifecycle :as tty.lifecycle]
+            [pmatiello.tty.internal.signal :as signal]
             [pmatiello.tty.internal.ansi.cursor :as cursor]))
 
 (defn- watch-fn [render-fn output!]
@@ -23,7 +24,7 @@
   [handle-fn render-fn state input output!]
   (try
     (add-watch state ::state-changed (watch-fn render-fn output!))
-    (notify! handle-fn state :pmatiello.tty/init true)
+    (notify! handle-fn state ::tty.lifecycle/init true)
 
     (signal/trap :winch (partial tty-size?! output!))
     (tty-size?! output! nil)
@@ -31,10 +32,10 @@
     (doseq [event input]
       (case (:event event)
         :cursor-position
-        (notify! handle-fn state :pmatiello.tty/size (:value event))
+        (notify! handle-fn state ::tty.lifecycle/size (:value event))
 
         (call-sync! handle-fn event)))
 
     (finally
-      (notify! handle-fn state :pmatiello.tty/halt true)
+      (notify! handle-fn state ::tty.lifecycle/halt true)
       (remove-watch state ::state-changed))))

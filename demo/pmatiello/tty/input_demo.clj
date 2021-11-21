@@ -1,6 +1,7 @@
 (ns pmatiello.tty.input-demo
   (:require [pmatiello.tty :as tty]
-            [pmatiello.tty.io :as tty.io])
+            [pmatiello.tty.io :as tty.io]
+            [clojure.spec.test.alpha :as stest])
   (:import (clojure.lang ExceptionInfo)))
 
 (def ^:private state
@@ -25,7 +26,7 @@
   (when (::tty/halt new-state)
     (tty.io/show-cursor! output))
 
-  (tty.io/print! output (:events new-state)
+  (tty.io/print! output (map str (:events new-state))
                  #::tty.io{:row 5 :column 1 :width 45 :height 6})
   (tty.io/place-cursor! output #::tty.io{:row 10 :column 1}))
 
@@ -37,6 +38,7 @@
     (throw (ex-info "Interrupted" {:cause :interrupted}))))
 
 (defn -main []
+  (stest/instrument)
   (try
     (tty/init! handle render state)
     (catch ExceptionInfo ex

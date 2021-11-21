@@ -19,13 +19,15 @@
   (when (full-render? old-state new-state)
     (tty.io/hide-cursor! output)
     (tty.io/clear-screen! output)
-    (tty.io/print! output header {:x 1 :y 1 :w 23 :h 3}))
+    (tty.io/print! output header
+                   #::tty.io{:row 1 :column 1 :width 23 :height 3}))
 
   (when (::tty/halt new-state)
     (tty.io/show-cursor! output))
 
-  (tty.io/print! output (:events new-state) {:x 1 :y 5 :w 45 :h 6})
-  (tty.io/place-cursor! output {:x 1 :y 10}))
+  (tty.io/print! output (:events new-state)
+                 #::tty.io{:row 5 :column 1 :width 45 :height 6})
+  (tty.io/place-cursor! output #::tty.io{:row 10 :column 1}))
 
 (defn handle [event]
   (swap! state assoc :events

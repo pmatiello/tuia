@@ -6,6 +6,7 @@
             [pmatiello.tty.internal.ansi.erase :as erase]))
 
 (use-fixtures :each fixtures/with-readable-csi)
+(use-fixtures :each fixtures/with-spec-instrumentation)
 
 (defn- new-output []
   (atom []))
@@ -13,35 +14,45 @@
 (deftest print!-test
   (testing "prints buffer at location"
     (let [output (new-output)]
-      (tty.io/print! output ["line1" "line2"] {:x 3 :y 4 :w 5 :h 2})
+      (tty.io/print! output
+                     ["line1" "line2"]
+                     #::tty.io{:row 4 :column 3 :width 5 :height 2})
       (is (= [(str (cursor/position 4 3) "line1")
               (str (cursor/position 5 3) "line2")]
              @output))))
 
   (testing "prints only the given height"
     (let [output (new-output)]
-      (tty.io/print! output ["line1" "line2" "ignored"] {:x 3 :y 4 :w 5 :h 2})
+      (tty.io/print! output
+                     ["line1" "line2" "ignored"]
+                     #::tty.io{:row 4 :column 3 :width 5 :height 2})
       (is (= [(str (cursor/position 4 3) "line1")
               (str (cursor/position 5 3) "line2")]
              @output))))
 
   (testing "prints only the given width"
     (let [output (new-output)]
-      (tty.io/print! output ["line1-ignored" "line2-ignored"] {:x 3 :y 4 :w 5 :h 2})
+      (tty.io/print! output
+                     ["line1-ignored" "line2-ignored"]
+                     #::tty.io{:row 4 :column 3 :width 5 :height 2})
       (is (= [(str (cursor/position 4 3) "line1")
               (str (cursor/position 5 3) "line2")]
              @output))))
 
   (testing "fills missing width in buffer with blank space"
     (let [output (new-output)]
-      (tty.io/print! output ["line1" "line2"] {:x 3 :y 4 :w 8 :h 2})
+      (tty.io/print! output
+                     ["line1" "line2"]
+                     #::tty.io{:row 4 :column 3 :width 8 :height 2})
       (is (= [(str (cursor/position 4 3) "line1   ")
               (str (cursor/position 5 3) "line2   ")]
              @output))))
 
   (testing "fills missing height in buffer with blank space"
     (let [output (new-output)]
-      (tty.io/print! output ["line1" "line2"] {:x 3 :y 4 :w 5 :h 3})
+      (tty.io/print! output
+                     ["line1" "line2"]
+                     #::tty.io{:row 4 :column 3 :width 5 :height 3})
       (is (= [(str (cursor/position 4 3) "line1")
               (str (cursor/position 5 3) "line2")
               (str (cursor/position 6 3) "     ")]
@@ -73,5 +84,5 @@
 (deftest place-cursor!-test
   (testing "moves cursor to given position"
     (let [output (new-output)]
-      (tty.io/place-cursor! output {:x 10 :y 5})
+      (tty.io/place-cursor! output #::tty.io{:row 5 :column 10})
       (is (= [(cursor/position 5 10)] @output)))))

@@ -1,15 +1,24 @@
 (ns pmatiello.tty.internal.io
-  (:require [pmatiello.tty.internal.ansi.cursor :as cursor]
-            [pmatiello.tty.internal.ansi.erase :as erase]
-            [pmatiello.tty.internal.stty :as stty])
+  (:require [pmatiello.tty.internal.stty :as stty]
+            [clojure.spec.alpha :as s])
   (:import (java.io Writer)))
 
-(defn write! [^Writer writer payload]
-  (doseq [^String each payload]
+(s/def ::output-buf (s/and sequential? (s/coll-of string?)))
+
+(defn write!
+  "Writes the output buffer into given writer."
+  [^Writer writer output-buf]
+  (doseq [^String each output-buf]
     (.append writer each))
   (.flush writer))
 
-(defn with-raw-tty [func]
+(s/fdef write!
+  :args (s/cat :writer #(instance? Writer %) :rendered-document ::output-buf))
+
+(defn with-raw-tty
+  "Executes func with the terminal set to raw mode.
+  Returns tty to original state on termination."
+  [func]
   (let [initial-stty (stty/current)]
     (try
       (stty/unset-flags! :icanon :echo)
@@ -17,3 +26,5 @@
       (finally
         (stty/apply! initial-stty)))))
 
+(s/fdef with-raw-tty
+  :args (s/cat :func fn?))

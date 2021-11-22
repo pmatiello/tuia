@@ -1,12 +1,13 @@
 (ns pmatiello.tty.io
   (:require [pmatiello.tty.internal.ansi.cursor :as cursor]
             [pmatiello.tty.internal.ansi.erase :as erase]
+            [pmatiello.tty.internal.io :as internal.io]
             [clojure.spec.alpha :as s])
   (:import (clojure.lang Atom)))
 
-(s/def ::output
+(s/def ::output-buf
   (s/and #(instance? Atom %)
-         #(-> % deref sequential?)))
+         #(s/valid? ::internal.io/output-buf @%)))
 
 (s/def ::document (s/and sequential? (s/coll-of ::paragraph)))
 (s/def ::paragraph string?)
@@ -56,57 +57,57 @@
   :args (s/cat :document ::document :width ::width :height ::height)
   :ret ::document)
 
-(defn- into-output!
-  "Adds string to the list of output writes."
-  [output string]
-  (swap! output conj string))
+(defn- into-output-buf!
+  "Appends the given string to the output buffer."
+  [output-buf payload]
+  (swap! output-buf conj payload))
 
-(s/fdef into-output!
-  :args (s/cat :output ::output :string string?))
+(s/fdef into-output-buf!
+  :args (s/cat :output-buf ::output-buf :payload string?))
 
 (defn print!
-  "Prints the given document to output at the given window."
-  [output document window]
+  "Prints the given document to the output buffer at the given window."
+  [output-buf document window]
   (let [{::keys [row column width height]} window
         cropped-lines (cropped document width height)
         indexed-lines (map vector (range) cropped-lines)]
     (doseq [[offset ^String line] indexed-lines]
-      (into-output! output (str (cursor/position (+ row offset) column) line)))))
+      (into-output-buf! output-buf (str (cursor/position (+ row offset) column) line)))))
 
 (s/fdef print!
-  :args (s/cat :output ::output :document ::document :window ::window))
+  :args (s/cat :output-buf ::output-buf :document ::document :window ::window))
 
 (defn clear-screen!
   "Clears the screen completely."
-  [output]
-  (into-output! output erase/all)
-  (into-output! output (cursor/position 1 1)))
+  [output-buf]
+  (into-output-buf! output-buf erase/all)
+  (into-output-buf! output-buf (cursor/position 1 1)))
 
 (s/fdef clear-screen!
-  :args (s/cat :output ::output))
+  :args (s/cat :output-buf ::output-buf))
 
 (defn show-cursor!
   "Makes the cursor visible."
-  [output]
-  (into-output! output cursor/show))
+  [output-buf]
+  (into-output-buf! output-buf cursor/show))
 
 (s/fdef show-cursor!
-  :args (s/cat :output ::output))
+  :args (s/cat :output-buf ::output-buf))
 
 (defn hide-cursor!
   "Makes the cursor invisible."
-  [output]
-  (into-output! output cursor/hide))
+  [output-buf]
+  (into-output-buf! output-buf cursor/hide))
 
 (s/fdef hide-cursor!
-  :args (s/cat :output ::output))
+  :args (s/cat :output-buf ::output-buf))
 
 (defn place-cursor!
   "Places the cursor at the given coordinates."
-  [output coordinates]
+  [output-buf coordinates]
   (let [{::keys [column row]} coordinates]
-    (into-output! output (cursor/position row column))))
+    (into-output-buf! output-buf (cursor/position row column))))
 
 (s/fdef place-cursor!
-  :args (s/cat :output ::output :coordinates ::coordinates)
+  :args (s/cat :output-buf ::output-buf :coordinates ::coordinates)
   :ret ::document)

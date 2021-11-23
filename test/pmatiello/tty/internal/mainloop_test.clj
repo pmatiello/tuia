@@ -10,6 +10,7 @@
   (:import (clojure.lang Atom)))
 
 (use-fixtures :each fixtures/with-readable-csi)
+(use-fixtures :each fixtures/with-spec-instrumentation)
 
 (declare handle-fn)
 (declare render-fn)

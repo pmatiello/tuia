@@ -2,13 +2,9 @@
   (:require [pmatiello.tty.internal.ansi.input :as input]
             [pmatiello.tty.internal.io :as io]
             [pmatiello.tty.internal.mainloop :as mainloop]
+            [pmatiello.tty.state :as tty.state]
             [clojure.spec.alpha :as s])
-  (:import (java.io Writer)
-           (clojure.lang Atom)))
-
-(s/def ::state
-  (s/and #(instance? Atom %)
-         #(-> % deref map?)))
+  (:import (java.io Writer)))
 
 (defn init!
   "Initializes the application main loop.
@@ -17,9 +13,9 @@
     - event
 
   render-fn: function invoked for each change in state. Args:
-    - output: a #::tty.io/output object
-    - old-state: previous ::state
-    - new-state: updated ::state
+    - output: a ::tty.io/output-buf object
+    - old-state: previous ::tty.state/state
+    - new-state: updated ::tty.state/state
 
   state: mutable application state"
   [handle-fn render-fn state]
@@ -31,4 +27,4 @@
         #(mainloop/with-mainloop handle-fn render-fn state input output!)))))
 
 (s/fdef init!
-  :args (s/cat :handle-fn fn? :render-fn fn? :state ::state))
+  :args (s/cat :handle-fn fn? :render-fn fn? :state ::tty.state/state))

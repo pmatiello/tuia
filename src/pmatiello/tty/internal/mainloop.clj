@@ -1,7 +1,7 @@
 (ns pmatiello.tty.internal.mainloop
   (:require [pmatiello.tty.lifecycle :as tty.lifecycle]
-            [pmatiello.tty.state :as tty.state]
             [pmatiello.tty.event :as tty.event]
+            [pmatiello.tty.state :as tty.state]
             [pmatiello.tty.internal.signal :as signal]
             [pmatiello.tty.internal.ansi.cursor :as cursor]
             [clojure.spec.alpha :as s]))
@@ -32,12 +32,12 @@
 
 (defn- notify!
   "Notify functions of an event."
-  [handle-fn state event value]
-  (call-sync! handle-fn {:event event :value value})
-  (swap! state assoc event value))
+  [handle-fn state {::tty.event/keys [type value] :as event}]
+  (call-sync! handle-fn event)
+  (swap! state assoc type value))
 
 (s/fdef notify!
-  :args (s/cat :handle-fn fn? :state ::tty.state/state :event ::tty.event/event :value any?))
+  :args (s/cat :handle-fn fn? :state ::tty.state/state :event ::tty.event/event))
 
 (defn- tty-size?!
   "Requests tty size."
@@ -58,20 +58,20 @@
   [handle-fn render-fn state input output!]
   (try
     (add-watch state ::state-changed (watch-fn render-fn output!))
-    (notify! handle-fn state ::tty.lifecycle/init true)
+    (notify! handle-fn state #::tty.event{:type ::tty.lifecycle/init :value true})
 
     (signal/trap :winch (partial tty-size?! output!))
     (tty-size?! output! nil)
 
     (doseq [event input]
-      (case (:event event)
+      (case (::tty.event/type event)
         :cursor-position
-        (notify! handle-fn state ::tty.lifecycle/size (:value event))
+        (notify! handle-fn state (assoc event ::tty.event/type ::tty.lifecycle/size))
 
         (call-sync! handle-fn event)))
 
     (finally
-      (notify! handle-fn state ::tty.lifecycle/halt true)
+      (notify! handle-fn state #::tty.event{:type ::tty.lifecycle/halt :value true})
       (remove-watch state ::state-changed))))
 
 (s/fdef with-mainloop

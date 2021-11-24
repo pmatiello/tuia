@@ -28,7 +28,7 @@
     (tty.io/show-cursor! output))
 
   (tty.io/print! output (map str (:events new-state))
-                 #::tty.io{:row 5 :column 1 :width 60 :height 6})
+                 #::tty.io{:row 5 :column 1 :width 80 :height 6})
   (tty.io/place-cursor! output #::tty.io{:row 10 :column 1}))
 
 (defn handle [event]

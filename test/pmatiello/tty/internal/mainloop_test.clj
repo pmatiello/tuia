@@ -2,6 +2,7 @@
   (:require [clojure.test :refer :all]
             [mockfn.clj-test :as mfn]
             [mockfn.matchers :as mfn.m]
+            [pmatiello.tty.event :as tty.event]
             [pmatiello.tty.lifecycle :as tty.lifecycle]
             [pmatiello.tty.internal.ansi.cursor :as cursor]
             [pmatiello.tty.internal.mainloop :as mainloop]
@@ -31,8 +32,8 @@
       (let [state (atom {})]
         (mainloop/with-mainloop handle-fn render-fn state [] output!))
       (mfn/verifying
-        (handle-fn {:event ::tty.lifecycle/init :value true}) nil (mfn.m/exactly 1)
-        (handle-fn {:event ::tty.lifecycle/halt :value true}) nil (mfn.m/exactly 1)))
+        (handle-fn #::tty.event{:type ::tty.lifecycle/init :value true}) nil (mfn.m/exactly 1)
+        (handle-fn #::tty.event{:type ::tty.lifecycle/halt :value true}) nil (mfn.m/exactly 1)))
 
     (mfn/testing "produce events to render function"
       (let [state (atom {})]
@@ -87,14 +88,14 @@
 
     (mfn/testing "notifies the handler function on init/resize"
       (let [state (atom {})]
-        (mainloop/with-mainloop handle-fn render-fn state [{:event :cursor-position :value [10 20]}] output!))
+        (mainloop/with-mainloop handle-fn render-fn state [#::tty.event{:type :cursor-position :value [10 20]}] output!))
       (mfn/verifying
-        (handle-fn {:event ::tty.lifecycle/size :value [10 20]}) nil (mfn.m/exactly 1)
+        (handle-fn #::tty.event{:type ::tty.lifecycle/size :value [10 20]}) nil (mfn.m/exactly 1)
         (handle-fn mfn.m/any-args?) nil (mfn.m/any)))
 
     (mfn/testing "updates the state atom on init/resize"
       (let [state (atom {})]
-        (mainloop/with-mainloop handle-fn render-fn state [{:event :cursor-position :value [10 20]}] output!)
+        (mainloop/with-mainloop handle-fn render-fn state [#::tty.event{:type :cursor-position :value [10 20]}] output!)
         (is (= [10 20] (::tty.lifecycle/size @state))))))
 
   (mfn/providing

@@ -3,8 +3,11 @@
             [mockfn.clj-test :as mfn]
             [mockfn.matchers :as mfn.matchers]
             [pmatiello.tty.internal.stty :as stty]
-            [clojure.java.shell :refer [sh]])
+            [clojure.java.shell :refer [sh]]
+            [pmatiello.tty.internal.fixtures :as fixtures])
   (:import (clojure.lang ExceptionInfo)))
+
+(use-fixtures :each fixtures/with-spec-instrumentation)
 
 (mfn/deftest current-test
   (mfn/testing "returns current line terminal settings"

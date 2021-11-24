@@ -4,6 +4,7 @@
             [pmatiello.tty.state :as tty.state]
             [pmatiello.tty.internal.signal :as signal]
             [pmatiello.tty.internal.ansi.cursor :as cursor]
+            [pmatiello.tty.internal.ansi.input :as input]
             [clojure.spec.alpha :as s]))
 
 (defn- watch-fn
@@ -76,4 +77,4 @@
 
 (s/fdef with-mainloop
   :args (s/cat :handle-fn fn? :render-fn fn? :state ::tty.state/state
-               :input sequential? :output! fn?))
+               :input ::input/event-seq :output! fn?))

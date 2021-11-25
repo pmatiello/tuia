@@ -9,8 +9,8 @@
   "Converts input from reader into a lazy sequence of events"
   [^Reader reader]
   (->> reader
-       input.parsing/reader->input-seq
-       input.parsing/input-seq->event-seq))
+       input.parsing/reader->char-seq
+       input.parsing/char-seq->event-seq))
 
 (s/fdef reader->event-seq
   :args (s/cat :reader #(instance? Reader %))

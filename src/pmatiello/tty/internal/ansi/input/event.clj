@@ -79,7 +79,7 @@
           column    (->> pos-chars (drop-while #(not= % 59)) (drop 1) (map char) str/join Integer/parseInt)]
       {:event :cursor-position :value [line column]})))
 
-(defn key-codes->event [key-codes]
+(defn char-codes->event [key-codes]
   (or (special-key key-codes)
       (regular-key key-codes)
       (device-status-report key-codes)

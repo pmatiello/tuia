@@ -1,7 +1,7 @@
 (ns pmatiello.tty.internal.signal-test
   (:require [clojure.test :refer :all]
-            [pmatiello.tty.internal.signal :as signal]
-            [pmatiello.tty.internal.fixtures :as fixtures])
+            [pmatiello.tty.internal.fixtures :as fixtures]
+            [pmatiello.tty.internal.signal :as signal])
   (:import (sun.misc Signal)))
 
 (use-fixtures :each fixtures/with-spec-instrumentation)

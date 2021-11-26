@@ -1,7 +1,7 @@
 (ns pmatiello.tty.internal.ansi.input-test
   (:require [clojure.test :refer :all]
-            [pmatiello.tty.internal.ansi.input :as input]
             [pmatiello.tty.event :as event]
+            [pmatiello.tty.internal.ansi.input :as input]
             [pmatiello.tty.internal.fixtures :as fixtures])
   (:import (java.io StringReader)))
 

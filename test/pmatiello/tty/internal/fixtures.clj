@@ -1,6 +1,6 @@
 (ns pmatiello.tty.internal.fixtures
-  (:require [pmatiello.tty.internal.ansi.support :as support]
-            [clojure.spec.test.alpha :as stest]))
+  (:require [clojure.spec.test.alpha :as stest]
+            [pmatiello.tty.internal.ansi.support :as support]))
 
 (defn with-spec-instrumentation [f]
   (stest/instrument)

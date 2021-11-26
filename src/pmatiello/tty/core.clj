@@ -1,9 +1,9 @@
 (ns pmatiello.tty.core
-  (:require [pmatiello.tty.internal.ansi.input :as input]
+  (:require [clojure.spec.alpha :as s]
+            [pmatiello.tty.internal.ansi.input :as input]
             [pmatiello.tty.internal.io :as io]
             [pmatiello.tty.internal.mainloop :as mainloop]
-            [pmatiello.tty.state :as tty.state]
-            [clojure.spec.alpha :as s])
+            [pmatiello.tty.state :as tty.state])
   (:import (java.io Writer)))
 
 (defn init!

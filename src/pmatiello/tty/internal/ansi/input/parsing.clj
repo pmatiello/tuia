@@ -1,6 +1,6 @@
 (ns pmatiello.tty.internal.ansi.input.parsing
-  (:require [pmatiello.tty.internal.ansi.input.event :as input.event]
-            [clojure.spec.alpha :as s])
+  (:require [clojure.spec.alpha :as s]
+            [pmatiello.tty.internal.ansi.input.event :as input.event])
   (:import (java.io Reader)))
 
 (s/def ::char-group

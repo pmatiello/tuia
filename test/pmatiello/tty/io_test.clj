@@ -1,9 +1,9 @@
 (ns pmatiello.tty.io-test
   (:require [clojure.test :refer :all]
-            [pmatiello.tty.io :as tty.io]
-            [pmatiello.tty.internal.fixtures :as fixtures]
             [pmatiello.tty.internal.ansi.cursor :as cursor]
-            [pmatiello.tty.internal.ansi.erase :as erase]))
+            [pmatiello.tty.internal.ansi.erase :as erase]
+            [pmatiello.tty.internal.fixtures :as fixtures]
+            [pmatiello.tty.io :as tty.io]))
 
 (use-fixtures :each fixtures/with-readable-csi)
 (use-fixtures :each fixtures/with-spec-instrumentation)

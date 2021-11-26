@@ -1,8 +1,8 @@
 (ns pmatiello.tty.io
-  (:require [pmatiello.tty.internal.ansi.cursor :as cursor]
+  (:require [clojure.spec.alpha :as s]
+            [pmatiello.tty.internal.ansi.cursor :as cursor]
             [pmatiello.tty.internal.ansi.erase :as erase]
-            [pmatiello.tty.internal.io :as internal.io]
-            [clojure.spec.alpha :as s])
+            [pmatiello.tty.internal.io :as internal.io])
   (:import (clojure.lang Atom)))
 
 (s/def ::output-buf

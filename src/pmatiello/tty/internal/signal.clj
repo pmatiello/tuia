@@ -1,6 +1,6 @@
 (ns pmatiello.tty.internal.signal
-  (:require [clojure.string :as str]
-            [clojure.spec.alpha :as s])
+  (:require [clojure.spec.alpha :as s]
+            [clojure.string :as str])
   (:import (sun.misc Signal SignalHandler)))
 
 (s/def ::signal keyword?)

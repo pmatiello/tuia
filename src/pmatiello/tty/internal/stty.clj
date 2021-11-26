@@ -1,7 +1,7 @@
 (ns pmatiello.tty.internal.stty
   (:require [clojure.java.shell :as shell]
-            [clojure.string :as string]
-            [clojure.spec.alpha :as s]))
+            [clojure.spec.alpha :as s]
+            [clojure.string :as string]))
 
 (s/def ::settings (s/map-of ::flag ::value))
 (s/def ::flag keyword?)

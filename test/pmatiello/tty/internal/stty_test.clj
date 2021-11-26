@@ -1,10 +1,10 @@
 (ns pmatiello.tty.internal.stty-test
-  (:require [clojure.test :refer :all]
+  (:require [clojure.java.shell :refer [sh]]
+            [clojure.test :refer :all]
             [mockfn.clj-test :as mfn]
             [mockfn.matchers :as mfn.matchers]
-            [pmatiello.tty.internal.stty :as stty]
-            [clojure.java.shell :refer [sh]]
-            [pmatiello.tty.internal.fixtures :as fixtures])
+            [pmatiello.tty.internal.fixtures :as fixtures]
+            [pmatiello.tty.internal.stty :as stty])
   (:import (clojure.lang ExceptionInfo)))
 
 (use-fixtures :each fixtures/with-spec-instrumentation)

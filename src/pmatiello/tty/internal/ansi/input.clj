@@ -1,6 +1,6 @@
 (ns pmatiello.tty.internal.ansi.input
-  (:require [pmatiello.tty.internal.ansi.input.parsing :as input.parsing]
-            [clojure.spec.alpha :as s])
+  (:require [clojure.spec.alpha :as s]
+            [pmatiello.tty.internal.ansi.input.parsing :as input.parsing])
   (:import (java.io Reader)))
 
 (s/def ::event-seq sequential?)

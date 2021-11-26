@@ -1,9 +1,9 @@
 (ns pmatiello.tty.internal.io-test
   (:require [clojure.test :refer :all]
             [mockfn.clj-test :as mfn]
+            [pmatiello.tty.internal.fixtures :as fixtures]
             [pmatiello.tty.internal.io :as io]
-            [pmatiello.tty.internal.stty :as stty]
-            [pmatiello.tty.internal.fixtures :as fixtures])
+            [pmatiello.tty.internal.stty :as stty])
   (:import (java.io StringWriter)))
 
 (use-fixtures :each fixtures/with-spec-instrumentation)

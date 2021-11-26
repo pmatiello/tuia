@@ -15,23 +15,32 @@
 (s/def ::char-code int?)
 (s/def ::has-next boolean?)
 
-(def ^:private escape-seq-timeout-ms 10)
+(def ^:private escape-seq-timeout-ms
+  "Time, in msec, given to the input buffer to fill between characters before deciding whether
+  an ESC character is an ESC keypress or the initiation of an escape sequence."
+  10)
 
-(defn ^:private starting-escape-sequence? [char]
+(defn ^:private starting-escape-sequence?
+  "Returns whether the given ::char starts an escape sequence."
+  [char]
   (and (::has-next? char) (= (::char-code char) 27)))
 
 (s/fdef starting-escape-sequence?
   :args (s/cat :char ::char)
   :ret any?)
 
-(defn ^:private continuing-escape-sequence? [acc char]
+(defn ^:private continuing-escape-sequence?
+  "Returns whether the given state and ::char continue an escape sequence."
+  [acc char]
   (and (not-empty @acc) (::has-next? char)))
 
 (s/fdef continuing-escape-sequence?
   :args (s/cat :acc ::char-group-builder :char ::char)
   :ret any?)
 
-(defn ^:private char->char-group [acc char]
+(defn ^:private char->char-group
+  "Consumes given ::char until a ::char-group is formed."
+  [acc char]
   (cond
     (starting-escape-sequence? char)
     (let [result @acc]
@@ -51,7 +60,10 @@
   :args (s/cat :acc ::char-group-builder :char ::char)
   :ret ::char-group)
 
-(defn ^:private in-char-groups [char-seq]
+(defn ^:private in-char-groups
+  "Converts a sequence of ::char into a sequence of ::char-group.
+  Groups ::char forming an ANSI escape sequence into a single ::char-group."
+  [char-seq]
   (let [acc (volatile! [])]
     (->> char-seq
          (map (partial char->char-group acc))
@@ -62,13 +74,17 @@
   :ret sequential?)
 
 (def ^:private char-group->char-codes
+  "Converts a ::char-group into a sequence of ::char-code."
   (partial map ::char-code))
 
 (s/fdef char-group->char-codes
   :args (s/cat :key ::char-group)
   :ret (s/coll-of ::char-code))
 
-(defn char-seq->event-seq [char-seq]
+(defn char-seq->event-seq
+  "Converts a sequence of ::char into a sequence of ::event/event.
+  Preserves the laziness of the given sequence."
+  [char-seq]
   (->> char-seq
        in-char-groups
        (map char-group->char-codes)
@@ -78,7 +94,9 @@
   :args (s/cat :char-seq sequential?)
   :ret sequential?)
 
-(defn reader->char-seq [^Reader reader]
+(defn reader->char-seq
+  "Converts input from reader into a lazy sequence of ::char"
+  [^Reader reader]
   (lazy-seq
     (let [char-code (.read reader)
           _ (if (= 27 char-code)

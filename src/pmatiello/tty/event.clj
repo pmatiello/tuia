@@ -4,6 +4,7 @@
 (s/def ::event
   (s/keys :req [::type ::value]))
 
-(s/def ::type keyword?)
+(s/def ::type
+  #{::init ::halt ::size ::keypress ::cursor-position ::unknown})
 
 (s/def ::value any?)

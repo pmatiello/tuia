@@ -1,5 +1,10 @@
 (ns pmatiello.tty.internal.ansi.input.event
-  (:require [clojure.string :as str]))
+  (:require [clojure.string :as str]
+            [clojure.spec.alpha :as s]
+            [pmatiello.tty.event :as event]))
+
+(s/def ::char-code-group (s/coll-of ::char-code))
+(s/def ::char-code int?)
 
 (def ^:private control-keys
   {0   :nul
@@ -63,24 +68,40 @@
   (merge (into {} (map (fn [[k v]] [[k] v]) control-keys))
          escaped-keys))
 
-(defn ^:private special-key [key-codes]
-  (if-let [key (get special-keys key-codes)]
-    {:event :keypress :value key}))
+(defn ^:private special-key [char-codes]
+  (if-let [key (get special-keys char-codes)]
+    #::event{:type ::event/keypress :value key}))
 
-(defn ^:private regular-key [key-codes]
-  (when (= (count key-codes) 1)
-    {:event :keypress
-     :value (-> key-codes first char str)}))
+(s/fdef special-key
+  :args (s/cat :char-codes ::char-code-group)
+  :ret ::event/event)
 
-(defn ^:private device-status-report [key-codes]
-  (when (and (= (take 2 key-codes) [27 91]) (= (last key-codes) 82))
-    (let [pos-chars (->> key-codes (drop 2) drop-last)
-          line      (->> pos-chars (take-while #(not= % 59)) (map char) str/join Integer/parseInt)
-          column    (->> pos-chars (drop-while #(not= % 59)) (drop 1) (map char) str/join Integer/parseInt)]
-      {:event :cursor-position :value [line column]})))
+(defn ^:private regular-key [char-codes]
+  (when (= (count char-codes) 1)
+    #::event{:type  ::event/keypress
+             :value (-> char-codes first char str)}))
 
-(defn char-codes->event [key-codes]
-  (or (special-key key-codes)
-      (regular-key key-codes)
-      (device-status-report key-codes)
-      {:event :unknown :value key-codes}))
+(s/fdef regular-key
+  :args (s/cat :char-codes ::char-code-group)
+  :ret ::event/event)
+
+(defn ^:private device-status-report [char-codes]
+  (when (and (= (take 2 char-codes) [27 91]) (= (last char-codes) 82))
+    (let [pos-chars (->> char-codes (drop 2) drop-last)
+          line (->> pos-chars (take-while #(not= % 59)) (map char) str/join Integer/parseInt)
+          column (->> pos-chars (drop-while #(not= % 59)) (drop 1) (map char) str/join Integer/parseInt)]
+      #::event{:type ::event/cursor-position :value [line column]})))
+
+(s/fdef device-status-report
+  :args (s/cat :char-codes ::char-code-group)
+  :ret ::event/event)
+
+(defn char-codes->event [char-codes]
+  (or (special-key char-codes)
+      (regular-key char-codes)
+      (device-status-report char-codes)
+      #::event{:type ::event/unknown :value char-codes}))
+
+(s/fdef char-codes->event
+  :args (s/cat :char-codes ::char-code-group)
+  :ret ::event/event)

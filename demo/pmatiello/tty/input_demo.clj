@@ -1,6 +1,6 @@
 (ns pmatiello.tty.input-demo
   (:require [pmatiello.tty.core :as tty.core]
-            [pmatiello.tty.lifecycle :as tty.lifecycle]
+            [pmatiello.tty.event :as tty.event]
             [pmatiello.tty.io :as tty.io]
             [clojure.spec.test.alpha :as stest])
   (:import (clojure.lang ExceptionInfo)))
@@ -14,8 +14,8 @@
    "Enter Ctrl+D to quit."])
 
 (defn- full-render? [old new]
-  (or (nil? (::tty.lifecycle/init old))
-      (not= (::tty.lifecycle/size old) (::tty.lifecycle/size new))))
+  (or (nil? (::tty.event/init old))
+      (not= (::tty.event/size old) (::tty.event/size new))))
 
 (defn- render [output old-state new-state]
   (when (full-render? old-state new-state)
@@ -24,7 +24,7 @@
     (tty.io/print! output header
                    #::tty.io{:row 1 :column 1 :width 23 :height 3}))
 
-  (when (::tty.lifecycle/halt new-state)
+  (when (::tty.event/halt new-state)
     (tty.io/show-cursor! output))
 
   (tty.io/print! output (map str (:events new-state))
@@ -35,7 +35,7 @@
   (swap! state assoc :events
          (->> event (conj (:events @state)) (take 5)))
 
-  (when (-> event :value #{:eot})
+  (when (-> event ::tty.event/value #{:eot})
     (throw (ex-info "Interrupted" {:cause :interrupted}))))
 
 (defn -main []

@@ -7,6 +7,7 @@
 (s/def ::char-code int?)
 
 (def ^:private control-keys
+  "Registry of control keys."
   {0   :nul
    1   :soh
    2   :stx
@@ -42,6 +43,7 @@
    127 :del})
 
 (def ^:private escaped-keys
+  "Dictionary of escaped keys."
   {[27 91 65]        :up
    [27 91 66]        :down
    [27 91 67]        :right
@@ -65,10 +67,13 @@
    [27 91 50 52 126] :f12})
 
 (def ^:private special-keys
+  "Dictionary of special keys."
   (merge (into {} (map (fn [[k v]] [[k] v]) control-keys))
          escaped-keys))
 
-(defn ^:private special-key [char-codes]
+(defn ^:private special-key
+  "Returns keypress event for special keys (up, down, f1, esc, etc.)."
+  [char-codes]
   (if-let [key (get special-keys char-codes)]
     #::event{:type ::event/keypress :value key}))
 
@@ -76,7 +81,9 @@
   :args (s/cat :char-codes ::char-code-group)
   :ret ::event/event)
 
-(defn ^:private regular-key [char-codes]
+(defn ^:private regular-key
+  "Returns keypress event for regular keys (A, B, 1, 2, etc.)."
+  [char-codes]
   (when (= (count char-codes) 1)
     #::event{:type  ::event/keypress
              :value (-> char-codes first char str)}))
@@ -85,7 +92,9 @@
   :args (s/cat :char-codes ::char-code-group)
   :ret ::event/event)
 
-(defn ^:private device-status-report [char-codes]
+(defn ^:private device-status-report
+  "Returns current-position event when consuming device-status-report char codes."
+  [char-codes]
   (when (and (= (take 2 char-codes) [27 91]) (= (last char-codes) 82))
     (let [pos-chars (->> char-codes (drop 2) drop-last)
           line (->> pos-chars (take-while #(not= % 59)) (map char) str/join Integer/parseInt)
@@ -96,7 +105,9 @@
   :args (s/cat :char-codes ::char-code-group)
   :ret ::event/event)
 
-(defn char-codes->event [char-codes]
+(defn char-codes->event
+  "Converts the given char codes into an ::event/event."
+  [char-codes]
   (or (special-key char-codes)
       (regular-key char-codes)
       (device-status-report char-codes)

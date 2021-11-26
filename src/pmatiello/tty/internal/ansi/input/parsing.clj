@@ -3,12 +3,19 @@
             [clojure.spec.alpha :as s])
   (:import (java.io Reader)))
 
-(s/def ::char-group (s/coll-of ::char))
+(s/def ::char-group
+  (s/coll-of ::char))
+
+(s/def ::char-group-builder
+  (s/and volatile? #(s/valid? ::char-group @%)))
+
 (s/def ::char
   (s/keys :req [::char-code ::has-next?]))
 
 (s/def ::char-code int?)
 (s/def ::has-next boolean?)
+
+(def ^:private escape-seq-timeout-ms 10)
 
 (defn ^:private starting-escape-sequence? [char]
   (and (::has-next? char) (= (::char-code char) 27)))
@@ -21,9 +28,8 @@
   (and (not-empty @acc) (::has-next? char)))
 
 (s/fdef continuing-escape-sequence?
-  :args (s/cat :acc volatile? :char ::char))
-
-(def ^:private escape-seq-timeout-ms 10)
+  :args (s/cat :acc ::char-group-builder :char ::char)
+  :ret any?)
 
 (defn ^:private char->char-group [acc char]
   (cond
@@ -42,7 +48,8 @@
       result)))
 
 (s/fdef char->char-group
-  :args (s/cat :acc volatile? :char ::char))
+  :args (s/cat :acc ::char-group-builder :char ::char)
+  :ret ::char-group)
 
 (defn ^:private in-char-groups [char-seq]
   (let [acc (volatile! [])]

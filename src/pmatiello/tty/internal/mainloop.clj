@@ -1,7 +1,7 @@
 (ns pmatiello.tty.internal.mainloop
-  (:require [pmatiello.tty.lifecycle :as tty.lifecycle]
-            [pmatiello.tty.event :as tty.event]
-            [pmatiello.tty.state :as tty.state]
+  (:require [pmatiello.tty.lifecycle :as lifecycle]
+            [pmatiello.tty.event :as event]
+            [pmatiello.tty.state :as state]
             [pmatiello.tty.internal.signal :as signal]
             [pmatiello.tty.internal.ansi.cursor :as cursor]
             [pmatiello.tty.internal.ansi.input :as input]
@@ -33,12 +33,12 @@
 
 (defn- notify!
   "Notify functions of an event."
-  [handle-fn state {::tty.event/keys [type value] :as event}]
+  [handle-fn state {::event/keys [type value] :as event}]
   (call-sync! handle-fn event)
   (swap! state assoc type value))
 
 (s/fdef notify!
-  :args (s/cat :handle-fn fn? :state ::tty.state/state :event ::tty.event/event))
+  :args (s/cat :handle-fn fn? :state ::state/state :event ::event/event))
 
 (defn- tty-size?!
   "Requests tty size."
@@ -59,22 +59,22 @@
   [handle-fn render-fn state input output!]
   (try
     (add-watch state ::state-changed (watch-fn render-fn output!))
-    (notify! handle-fn state #::tty.event{:type ::tty.lifecycle/init :value true})
+    (notify! handle-fn state #::event{:type ::lifecycle/init :value true})
 
     (signal/trap :winch (partial tty-size?! output!))
     (tty-size?! output! nil)
 
     (doseq [event input]
-      (case (::tty.event/type event)
-        :cursor-position
-        (notify! handle-fn state (assoc event ::tty.event/type ::tty.lifecycle/size))
+      (case (::event/type event)
+        ::event/cursor-position
+        (notify! handle-fn state (assoc event ::event/type ::lifecycle/size))
 
         (call-sync! handle-fn event)))
 
     (finally
-      (notify! handle-fn state #::tty.event{:type ::tty.lifecycle/halt :value true})
+      (notify! handle-fn state #::event{:type ::lifecycle/halt :value true})
       (remove-watch state ::state-changed))))
 
 (s/fdef with-mainloop
-  :args (s/cat :handle-fn fn? :render-fn fn? :state ::tty.state/state
+  :args (s/cat :handle-fn fn? :render-fn fn? :state ::state/state
                :input ::input/event-seq :output! fn?))

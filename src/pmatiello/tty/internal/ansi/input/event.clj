@@ -1,6 +1,6 @@
 (ns pmatiello.tty.internal.ansi.input.event
-  (:require [clojure.string :as str]
-            [clojure.spec.alpha :as s]
+  (:require [clojure.spec.alpha :as s]
+            [clojure.string :as str]
             [pmatiello.tty.event :as event]))
 
 (s/def ::char-code-group (s/coll-of ::char-code))

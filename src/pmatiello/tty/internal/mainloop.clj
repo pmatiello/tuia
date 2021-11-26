@@ -1,10 +1,10 @@
 (ns pmatiello.tty.internal.mainloop
-  (:require [pmatiello.tty.event :as event]
-            [pmatiello.tty.state :as state]
-            [pmatiello.tty.internal.signal :as signal]
+  (:require [clojure.spec.alpha :as s]
+            [pmatiello.tty.event :as event]
             [pmatiello.tty.internal.ansi.cursor :as cursor]
             [pmatiello.tty.internal.ansi.input :as input]
-            [clojure.spec.alpha :as s]))
+            [pmatiello.tty.internal.signal :as signal]
+            [pmatiello.tty.state :as state]))
 
 (defn- watch-fn
   "Produces a watch function for an atom such that render-fn is invoked with the arguments:

@@ -1,9 +1,9 @@
 (ns pmatiello.tty.internal.ansi.input.event-test
   (:require [clojure.test :refer :all])
-  (:require [pmatiello.tty.internal.ansi.input.event :as input.event]
+  (:require [clojure.spec.alpha :as s]
             [pmatiello.tty.event :as event]
-            [pmatiello.tty.internal.fixtures :as fixtures]
-            [clojure.spec.alpha :as s]))
+            [pmatiello.tty.internal.ansi.input.event :as input.event]
+            [pmatiello.tty.internal.fixtures :as fixtures]))
 
 (use-fixtures :each fixtures/with-spec-instrumentation)
 

@@ -1,8 +1,8 @@
 (ns pmatiello.tty.input-demo
-  (:require [pmatiello.tty.core :as tty.core]
+  (:require [clojure.spec.test.alpha :as stest]
+            [pmatiello.tty.core :as tty.core]
             [pmatiello.tty.event :as tty.event]
-            [pmatiello.tty.io :as tty.io]
-            [clojure.spec.test.alpha :as stest])
+            [pmatiello.tty.io :as tty.io])
   (:import (clojure.lang ExceptionInfo)))
 
 (def ^:private state

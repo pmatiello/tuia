@@ -4,9 +4,9 @@
             [mockfn.matchers :as mfn.m]
             [pmatiello.tty.event :as event]
             [pmatiello.tty.internal.ansi.cursor :as cursor]
+            [pmatiello.tty.internal.fixtures :as fixtures]
             [pmatiello.tty.internal.mainloop :as mainloop]
-            [pmatiello.tty.internal.signal :as signal]
-            [pmatiello.tty.internal.fixtures :as fixtures])
+            [pmatiello.tty.internal.signal :as signal])
   (:import (clojure.lang Atom)))
 
 (use-fixtures :each fixtures/with-readable-csi)

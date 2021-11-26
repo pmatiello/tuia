@@ -1,6 +1,6 @@
 (ns pmatiello.tty.internal.io
-  (:require [pmatiello.tty.internal.stty :as stty]
-            [clojure.spec.alpha :as s])
+  (:require [clojure.spec.alpha :as s]
+            [pmatiello.tty.internal.stty :as stty])
   (:import (java.io Writer)))
 
 (s/def ::output-buf (s/and sequential? (s/coll-of string?)))

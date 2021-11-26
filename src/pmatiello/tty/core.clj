@@ -3,7 +3,7 @@
             [pmatiello.tty.internal.ansi.input :as input]
             [pmatiello.tty.internal.io :as io]
             [pmatiello.tty.internal.mainloop :as mainloop]
-            [pmatiello.tty.state :as tty.state])
+            [pmatiello.tty.state :as state])
   (:import (java.io Writer)))
 
 (defn init!
@@ -27,4 +27,4 @@
         #(mainloop/with-mainloop handle-fn render-fn state input output!)))))
 
 (s/fdef init!
-  :args (s/cat :handle-fn fn? :render-fn fn? :state ::tty.state/state))
+  :args (s/cat :handle-fn fn? :render-fn fn? :state ::state/state))

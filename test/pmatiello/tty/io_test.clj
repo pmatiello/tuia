@@ -3,7 +3,8 @@
             [pmatiello.tty.internal.ansi.cursor :as cursor]
             [pmatiello.tty.internal.ansi.erase :as erase]
             [pmatiello.tty.internal.fixtures :as fixtures]
-            [pmatiello.tty.io :as io]))
+            [pmatiello.tty.io :as io]
+            [pmatiello.tty.text :as txt]))
 
 (use-fixtures :each fixtures/with-readable-csi)
 (use-fixtures :each fixtures/with-spec-instrumentation)
@@ -12,10 +13,20 @@
   (atom []))
 
 (deftest print!-test
-  (testing "prints buffer at location"
+  (testing "prints loose text at location"
     (let [output-buf (new-output-buf)]
       (io/print! output-buf
                  ["line1" "line2"]
+                 #::io{:row 4 :column 3 :width 5 :height 2})
+      (is (= [(str (cursor/position 4 3) "line1")
+              (str (cursor/position 5 3) "line2")]
+             @output-buf))))
+
+  (testing "prints strict text at location"
+    (let [output-buf (new-output-buf)]
+      (io/print! output-buf
+                 [#::txt{:style [] :body "line1"}
+                  #::txt{:style [] :body "line2"}]
                  #::io{:row 4 :column 3 :width 5 :height 2})
       (is (= [(str (cursor/position 4 3) "line1")
               (str (cursor/position 5 3) "line2")]
@@ -39,7 +50,7 @@
               (str (cursor/position 5 3) "line2")]
              @output-buf))))
 
-  (testing "fills missing width in buffer with blank space"
+  (testing "fills missing width in text with blank space"
     (let [output-buf (new-output-buf)]
       (io/print! output-buf
                  ["line1" "line2"]
@@ -48,7 +59,7 @@
               (str (cursor/position 5 3) "line2   ")]
              @output-buf))))
 
-  (testing "fills missing height in buffer with blank space"
+  (testing "fills missing height in text with blank space"
     (let [output-buf (new-output-buf)]
       (io/print! output-buf
                  ["line1" "line2"]

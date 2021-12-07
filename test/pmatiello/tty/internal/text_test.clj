@@ -9,10 +9,10 @@
 (deftest loose-text->text-test
   (testing "already strict texts are unchanged"
     (is (= [#::txt{:style [::txt/bold] :body "bold"}
-            #::txt{:style [::txt/blue] :body "blue"}]
+            #::txt{:style [::txt/fg-blue] :body "blue"}]
            (internal.txt/loose-text->text
              [#::txt{:style [::txt/bold] :body "bold"}
-              #::txt{:style [::txt/blue] :body "blue"}]))))
+              #::txt{:style [::txt/fg-blue] :body "blue"}]))))
 
   (testing "strings are converted into strict plain text"
     (is (= [#::txt{:style [] :body "plain"}

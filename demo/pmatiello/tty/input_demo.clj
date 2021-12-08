@@ -2,6 +2,7 @@
   (:require [clojure.spec.test.alpha :as stest]
             [pmatiello.tty.core :as tty.core]
             [pmatiello.tty.event :as tty.event]
+            [pmatiello.tty.text :as txt]
             [pmatiello.tty.io :as tty.io])
   (:import (clojure.lang ExceptionInfo)))
 
@@ -9,8 +10,8 @@
   (atom {:events '()}))
 
 (def ^:private header
-  ["input-demo ------------"
-   "Type to produce events."
+  [#::txt {:style [::txt/bold] :body "input-demo"}
+   #::txt {:style [::txt/fg-blue] :body "Type to produce events."}
    "Enter Ctrl+D to quit."])
 
 (defn- full-render? [old new]

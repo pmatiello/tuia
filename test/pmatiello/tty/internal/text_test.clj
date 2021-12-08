@@ -2,8 +2,10 @@
   (:require [clojure.test :refer :all]
             [pmatiello.tty.text :as txt]
             [pmatiello.tty.internal.text :as internal.txt]
+            [pmatiello.tty.internal.ansi.graphics :as ansi.graphics]
             [pmatiello.tty.internal.fixtures :as fixtures]))
 
+(use-fixtures :each fixtures/with-readable-csi)
 (use-fixtures :each fixtures/with-spec-instrumentation)
 
 (deftest loose-text->text-test
@@ -44,4 +46,11 @@
            (internal.txt/text->page [#::txt{:style [] :body "plain"}
                                      #::txt{:style [] :body "text!"}
                                      #::txt{:style [] :body "CROP!"}]
-                                    #::internal.txt{:width 5 :height 2})))))
+                                    #::internal.txt{:width 5 :height 2}))))
+
+  (testing "renders with emphasis"
+    (is (= [(str ansi.graphics/bold ansi.graphics/slow-blink "bold blink" ansi.graphics/reset)
+            (str ansi.graphics/underline "underline " ansi.graphics/reset)]
+           (internal.txt/text->page [#::txt{:style [::txt/bold ::txt/blink] :body "bold blink"}
+                                     #::txt{:style [::txt/underline] :body "underline"}]
+                                    #::internal.txt{:width 10 :height 2})))))

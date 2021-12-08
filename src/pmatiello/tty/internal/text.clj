@@ -1,6 +1,8 @@
 (ns pmatiello.tty.internal.text
   (:require [clojure.spec.alpha :as s]
-            [pmatiello.tty.text :as txt]))
+            [pmatiello.tty.text :as txt]
+            [pmatiello.tty.internal.ansi.graphics :as ansi.graphics]
+            [clojure.string :as string]))
 
 (s/def ::page
   string?)
@@ -70,13 +72,40 @@
   :args (s/cat :width ::width :text ::txt/text)
   :ret ::txt/text)
 
+(def ^:private style->string*
+  {::txt/bold      ansi.graphics/bold
+   ::txt/underline ansi.graphics/underline
+   ::txt/blink     ansi.graphics/slow-blink})
+
+(defn ^:private style->string
+  "Renders the ANSI codes for the given style"
+  [style]
+  (->> style
+       (map style->string*)
+       string/join))
+
+(s/fdef style->string
+  :args (s/cat :style ::txt/style)
+  :ret string?)
+
+(defn ^:private paragraph->string
+  "Renders a paragraph into a printable string."
+  [{:keys [::txt/style ::txt/body]}]
+  (if (empty? style)
+    body
+    (str (style->string style) body ansi.graphics/reset)))
+
+(s/fdef paragraph->string
+  :args (s/cat :paragraph ::txt/paragraph)
+  :ret string?)
+
 (defn text->page
   "Renders text into a printable string."
   [text {::keys [width height]}]
   (->> text
        (with-height height)
        (with-width width)
-       (map ::txt/body)))
+       (map paragraph->string)))
 
 (s/fdef text->page
   :args (s/cat :text ::txt/text :settings ::render-settings)

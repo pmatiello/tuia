@@ -73,9 +73,18 @@
   :ret ::txt/text)
 
 (def ^:private style->string*
-  {::txt/bold      ansi.graphics/bold
-   ::txt/underline ansi.graphics/underline
-   ::txt/blink     ansi.graphics/slow-blink})
+  {::txt/bold       ansi.graphics/bold
+   ::txt/underline  ansi.graphics/underline
+   ::txt/blink      ansi.graphics/slow-blink
+   ::txt/fg-black   ansi.graphics/fg-black
+   ::txt/fg-red     ansi.graphics/fg-red
+   ::txt/fg-green   ansi.graphics/fg-green
+   ::txt/fg-yellow  ansi.graphics/fg-yellow
+   ::txt/fg-blue    ansi.graphics/fg-blue
+   ::txt/fg-purple  ansi.graphics/fg-purple
+   ::txt/fg-cyan    ansi.graphics/fg-cyan
+   ::txt/fg-white   ansi.graphics/fg-white
+   ::txt/fg-default ansi.graphics/fg-default})
 
 (defn ^:private style->string
   "Renders the ANSI codes for the given style"

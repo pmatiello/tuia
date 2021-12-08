@@ -11,7 +11,7 @@
 
 (def ^:private header
   [#::txt {:style [::txt/bold] :body "input-demo"}
-   "Type to produce events."
+   #::txt {:style [::txt/fg-blue] :body "Type to produce events."}
    "Enter Ctrl+D to quit."])
 
 (defn- full-render? [old new]

@@ -53,4 +53,11 @@
             (str ansi.graphics/underline "underline " ansi.graphics/reset)]
            (internal.txt/text->page [#::txt{:style [::txt/bold ::txt/blink] :body "bold blink"}
                                      #::txt{:style [::txt/underline] :body "underline"}]
-                                    #::internal.txt{:width 10 :height 2})))))
+                                    #::internal.txt{:width 10 :height 2}))))
+
+  (testing "renders with foreground colour"
+    (is (= [(str ansi.graphics/fg-blue "blue " ansi.graphics/reset)
+            (str ansi.graphics/fg-green "green" ansi.graphics/reset)]
+           (internal.txt/text->page [#::txt{:style [::txt/fg-blue] :body "blue"}
+                                     #::txt{:style [::txt/fg-green] :body "green"}]
+                                    #::internal.txt{:width 5 :height 2})))))

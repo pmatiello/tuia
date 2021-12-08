@@ -84,7 +84,16 @@
    ::txt/fg-purple  ansi.graphics/fg-purple
    ::txt/fg-cyan    ansi.graphics/fg-cyan
    ::txt/fg-white   ansi.graphics/fg-white
-   ::txt/fg-default ansi.graphics/fg-default})
+   ::txt/fg-default ansi.graphics/fg-default
+   ::txt/bg-black   ansi.graphics/bg-black
+   ::txt/bg-red     ansi.graphics/bg-red
+   ::txt/bg-green   ansi.graphics/bg-green
+   ::txt/bg-yellow  ansi.graphics/bg-yellow
+   ::txt/bg-blue    ansi.graphics/bg-blue
+   ::txt/bg-purple  ansi.graphics/bg-purple
+   ::txt/bg-cyan    ansi.graphics/bg-cyan
+   ::txt/bg-white   ansi.graphics/bg-white
+   ::txt/bg-default ansi.graphics/bg-default})
 
 (defn ^:private style->string
   "Renders the ANSI codes for the given style"

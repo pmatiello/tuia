@@ -1,8 +1,8 @@
 (ns pmatiello.tuia.internal.text
   (:require [clojure.spec.alpha :as s]
-            [pmatiello.tuia.text :as txt]
+            [clojure.string :as string]
             [pmatiello.tuia.internal.ansi.graphics :as ansi.graphics]
-            [clojure.string :as string]))
+            [pmatiello.tuia.text :as txt]))
 
 (s/def ::page
   string?)

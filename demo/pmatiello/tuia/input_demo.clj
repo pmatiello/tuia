@@ -2,8 +2,8 @@
   (:require [clojure.spec.test.alpha :as stest]
             [pmatiello.tuia.core :as tuia.core]
             [pmatiello.tuia.event :as tuia.event]
-            [pmatiello.tuia.text :as txt]
-            [pmatiello.tuia.io :as tuia.io])
+            [pmatiello.tuia.io :as tuia.io]
+            [pmatiello.tuia.text :as txt])
   (:import (clojure.lang ExceptionInfo)))
 
 (def ^:private state

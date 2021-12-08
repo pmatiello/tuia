@@ -1,9 +1,9 @@
 (ns pmatiello.tuia.internal.text-test
   (:require [clojure.test :refer :all]
-            [pmatiello.tuia.text :as txt]
-            [pmatiello.tuia.internal.text :as internal.txt]
             [pmatiello.tuia.internal.ansi.graphics :as ansi.graphics]
-            [pmatiello.tuia.internal.fixtures :as fixtures]))
+            [pmatiello.tuia.internal.fixtures :as fixtures]
+            [pmatiello.tuia.internal.text :as internal.txt]
+            [pmatiello.tuia.text :as txt]))
 
 (use-fixtures :each fixtures/with-readable-csi)
 (use-fixtures :each fixtures/with-spec-instrumentation)

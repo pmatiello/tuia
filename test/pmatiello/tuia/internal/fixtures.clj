@@ -9,5 +9,5 @@
 
 (defn with-readable-csi [f]
   (with-redefs
-    [support/csi "\\u001B["]
+    [support/csi "\\u001b["]
     (f)))

@@ -73,7 +73,7 @@
   (testing "clears screen"
     (let [output-buf (new-output-buf)]
       (io/clear-screen! output-buf)
-      (is (some #{erase/all} @output-buf))))
+      (is (some #{(erase/all)} @output-buf))))
 
   (testing "moves cursor to top left"
     (let [output-buf (new-output-buf)]
@@ -84,13 +84,13 @@
   (testing "shows input cursor"
     (let [output-buf (new-output-buf)]
       (io/show-cursor! output-buf)
-      (is (= [cursor/show] @output-buf)))))
+      (is (= [(cursor/show)] @output-buf)))))
 
 (deftest hide-cursor!-test
   (testing "hide input cursor"
     (let [output-buf (new-output-buf)]
       (io/hide-cursor! output-buf)
-      (is (= [cursor/hide] @output-buf)))))
+      (is (= [(cursor/hide)] @output-buf)))))
 
 (deftest place-cursor!-test
   (testing "moves cursor to given position"

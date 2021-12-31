@@ -48,7 +48,7 @@
 (defn clear-screen!
   "Clears the screen completely."
   [output-buf]
-  (into-output-buf! output-buf erase/all)
+  (into-output-buf! output-buf (erase/all))
   (into-output-buf! output-buf (cursor/position 1 1)))
 
 (s/fdef clear-screen!
@@ -57,7 +57,7 @@
 (defn show-cursor!
   "Makes the cursor visible."
   [output-buf]
-  (into-output-buf! output-buf cursor/show))
+  (into-output-buf! output-buf (cursor/show)))
 
 (s/fdef show-cursor!
   :args (s/cat :output-buf ::output-buf))
@@ -65,7 +65,7 @@
 (defn hide-cursor!
   "Makes the cursor invisible."
   [output-buf]
-  (into-output-buf! output-buf cursor/hide))
+  (into-output-buf! output-buf (cursor/hide)))
 
 (s/fdef hide-cursor!
   :args (s/cat :output-buf ::output-buf))

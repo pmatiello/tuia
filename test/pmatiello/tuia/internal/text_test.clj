@@ -49,22 +49,22 @@
                                     #::internal.txt{:width 5 :height 2}))))
 
   (testing "renders with emphasis"
-    (is (= [(str ansi.graphics/bold ansi.graphics/slow-blink "bold blink" ansi.graphics/reset)
-            (str ansi.graphics/underline "underline " ansi.graphics/reset)]
+    (is (= [(str (ansi.graphics/bold) (ansi.graphics/slow-blink) "bold blink" (ansi.graphics/reset))
+            (str (ansi.graphics/underline) "underline " (ansi.graphics/reset))]
            (internal.txt/text->page [#::txt{:style [::txt/bold ::txt/blink] :body "bold blink"}
                                      #::txt{:style [::txt/underline] :body "underline"}]
                                     #::internal.txt{:width 10 :height 2}))))
 
   (testing "renders with foreground colors"
-    (is (= [(str ansi.graphics/fg-blue "blue " ansi.graphics/reset)
-            (str ansi.graphics/fg-green "green" ansi.graphics/reset)]
+    (is (= [(str (ansi.graphics/fg-blue) "blue " (ansi.graphics/reset))
+            (str (ansi.graphics/fg-green) "green" (ansi.graphics/reset))]
            (internal.txt/text->page [#::txt{:style [::txt/fg-blue] :body "blue"}
                                      #::txt{:style [::txt/fg-green] :body "green"}]
                                     #::internal.txt{:width 5 :height 2}))))
 
   (testing "renders with background colors"
-    (is (= [(str ansi.graphics/bg-white "white " ansi.graphics/reset)
-            (str ansi.graphics/bg-yellow "yellow" ansi.graphics/reset)]
+    (is (= [(str (ansi.graphics/bg-white) "white " (ansi.graphics/reset))
+            (str (ansi.graphics/bg-yellow) "yellow" (ansi.graphics/reset))]
            (internal.txt/text->page [#::txt{:style [::txt/bg-white] :body "white"}
                                      #::txt{:style [::txt/bg-yellow] :body "yellow"}]
                                     #::internal.txt{:width 6 :height 2})))))

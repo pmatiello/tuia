@@ -25,11 +25,11 @@
 (defn position [line column]
   (ansi-seq line ";" column "H"))
 
-(def current-position
+(defn current-position []
   (ansi-seq "6n"))
 
-(def show
+(defn show []
   (ansi-seq "?25h"))
 
-(def hide
+(defn hide []
   (ansi-seq "?25l"))

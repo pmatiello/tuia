@@ -74,7 +74,7 @@
         (mainloop/with-mainloop handle-fn render-fn state [] output!))
       (mfn/verifying
         (signal/trap :winch fn?) nil (mfn.m/exactly 1)
-        (output! [(cursor/position 9999 9999) cursor/current-position]) nil (mfn.m/exactly 1)
+        (output! [(cursor/position 9999 9999) (cursor/current-position)]) nil (mfn.m/exactly 1)
         (output! mfn.m/any-args?) nil (mfn.m/any)))
 
     (mfn/testing "request dimensions on resize"
@@ -82,7 +82,7 @@
         (mainloop/with-mainloop handle-fn render-fn state [] output!))
       (mfn/verifying
         (signal/trap :winch function?!) nil (mfn.m/exactly 1)
-        (output! [(cursor/position 9999 9999) cursor/current-position]) nil (mfn.m/exactly 2)
+        (output! [(cursor/position 9999 9999) (cursor/current-position)]) nil (mfn.m/exactly 2)
         (output! mfn.m/any-args?) nil (mfn.m/any)))
 
     (mfn/testing "notifies the handler function on init/resize"

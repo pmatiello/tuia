@@ -1,40 +1,109 @@
 (ns pmatiello.tuia.internal.ansi.graphics
   (:require [pmatiello.tuia.internal.ansi.support :refer [ansi-seq]]))
 
-(def reset (ansi-seq "0m"))
-(def bold (ansi-seq "1m"))
-(def faint (ansi-seq "2m"))
-(def italic (ansi-seq "3m"))
-(def underline (ansi-seq "4m"))
-(def slow-blink (ansi-seq "5m"))
-(def fast-blink (ansi-seq "6m"))
-(def reverse-video (ansi-seq "7m"))
-(def conceal (ansi-seq "8m"))
-(def strike (ansi-seq "9m"))
-(def weight-off (ansi-seq "22m"))
-(def italic-off (ansi-seq "23m"))
-(def underline-off (ansi-seq "24m"))
-(def blink-off (ansi-seq "25m"))
-(def reverse-video-off (ansi-seq "27m"))
-(def conceal-off (ansi-seq "28m"))
-(def strike-off (ansi-seq "29m"))
+(defn reset []
+  (ansi-seq "0m"))
 
-(def fg-black (ansi-seq "30m"))
-(def fg-red (ansi-seq "31m"))
-(def fg-green (ansi-seq "32m"))
-(def fg-yellow (ansi-seq "33m"))
-(def fg-blue (ansi-seq "34m"))
-(def fg-purple (ansi-seq "35m"))
-(def fg-cyan (ansi-seq "36m"))
-(def fg-white (ansi-seq "37m"))
-(def fg-default (ansi-seq "39m"))
+(defn bold []
+  (ansi-seq "1m"))
 
-(def bg-black (ansi-seq "40m"))
-(def bg-red (ansi-seq "41m"))
-(def bg-green (ansi-seq "42m"))
-(def bg-yellow (ansi-seq "43m"))
-(def bg-blue (ansi-seq "44m"))
-(def bg-purple (ansi-seq "45m"))
-(def bg-cyan (ansi-seq "46m"))
-(def bg-white (ansi-seq "47m"))
-(def bg-default (ansi-seq "49m"))
+(defn faint []
+  (ansi-seq "2m"))
+
+(defn italic []
+  (ansi-seq "3m"))
+
+(defn underline []
+  (ansi-seq "4m"))
+
+(defn slow-blink []
+  (ansi-seq "5m"))
+
+(defn fast-blink []
+  (ansi-seq "6m"))
+
+(defn reverse-video []
+  (ansi-seq "7m"))
+
+(defn conceal []
+  (ansi-seq "8m"))
+
+(defn strike []
+  (ansi-seq "9m"))
+
+(defn weight-off []
+  (ansi-seq "22m"))
+
+(defn italic-off []
+  (ansi-seq "23m"))
+
+(defn underline-off []
+  (ansi-seq "24m"))
+
+(defn blink-off []
+  (ansi-seq "25m"))
+
+(defn reverse-video-off []
+  (ansi-seq "27m"))
+
+(defn conceal-off []
+  (ansi-seq "28m"))
+
+(defn strike-off []
+  (ansi-seq "29m"))
+
+
+(defn fg-black []
+  (ansi-seq "30m"))
+
+(defn fg-red []
+  (ansi-seq "31m"))
+
+(defn fg-green []
+  (ansi-seq "32m"))
+
+(defn fg-yellow []
+  (ansi-seq "33m"))
+
+(defn fg-blue []
+  (ansi-seq "34m"))
+
+(defn fg-purple []
+  (ansi-seq "35m"))
+
+(defn fg-cyan []
+  (ansi-seq "36m"))
+
+(defn fg-white []
+  (ansi-seq "37m"))
+
+(defn fg-default []
+  (ansi-seq "39m"))
+
+(defn bg-black []
+  (ansi-seq "40m"))
+
+(defn bg-red []
+  (ansi-seq "41m"))
+
+(defn bg-green []
+  (ansi-seq "42m"))
+
+(defn bg-yellow []
+  (ansi-seq "43m"))
+
+(defn bg-blue []
+  (ansi-seq "44m"))
+
+(defn bg-purple []
+  (ansi-seq "45m"))
+
+(defn bg-cyan []
+  (ansi-seq "46m"))
+
+(defn bg-white []
+  (ansi-seq "47m"))
+
+(defn bg-default []
+  (ansi-seq "49m"))
+

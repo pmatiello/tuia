@@ -8,6 +8,9 @@
   (s/and sequential? (s/coll-of ::loose-paragraph)))
 
 (s/def ::paragraph
+  (s/and sequential? (s/coll-of ::segment)))
+
+(s/def ::segment
   (s/keys :req [::style ::body]))
 
 (s/def ::style
@@ -19,7 +22,9 @@
 (s/def ::body string?)
 
 (s/def ::loose-paragraph
-  (s/or :string string? :paragraph ::paragraph))
+  (s/or :string string?
+        :segment ::segment
+        :paragraph ::paragraph))
 
 (s/def ::emphasis
   #{::bold ::underline ::blink})

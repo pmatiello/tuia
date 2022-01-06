@@ -18,8 +18,9 @@
   "Converts a loose paragraph into a strict paragraph."
   [loose-paragraph]
   (cond
-    (string? loose-paragraph) {::txt/style [] ::txt/body loose-paragraph}
-    :else loose-paragraph))
+    (string? loose-paragraph) [{::txt/style [] ::txt/body loose-paragraph}]
+    (s/valid? ::txt/segment loose-paragraph) [loose-paragraph]
+    (s/valid? ::txt/paragraph loose-paragraph) loose-paragraph))
 
 (s/fdef loose-paragraph->paragraph
   :args (s/cat :loose-paragraph ::txt/loose-paragraph)
@@ -35,7 +36,7 @@
   :ret ::txt/text)
 
 (def ^:private blank-paragraph
-  {::txt/style [] ::txt/body ""})
+  [{::txt/style [] ::txt/body ""}])
 
 (defn ^:private with-height
   "Crops the text at the given height.
@@ -49,13 +50,28 @@
   :args (s/cat :height ::height :text ::txt/text)
   :ret ::txt/text)
 
+(defn ^:private into-paragraph
+  "Accumulates segments into a paragraph of a maximum width.
+  Crops all chars beyond the maximum width."
+  [max-width paragraph {:keys [::txt/style ::txt/body]}]
+  (let [curr-width      (->> paragraph (map ::txt/body) (map count) (reduce +))
+        remaining-width (- max-width curr-width)
+        selected-size   (min remaining-width (count body))
+        selected-text   (subs body 0 selected-size)
+        new-segment     #::txt{:style (or style []) :body selected-text}]
+    (conj paragraph new-segment)))
+
+(s/fdef into-paragraph
+  :args (s/cat :width int? :paragraph ::txt/paragraph :segment ::txt/segment)
+  :ret ::txt/paragraph)
+
 (defn ^:private with-width*
   "Crops the paragraph at the given width.
   Completes remaining columns with blank characters."
   [width paragraph]
-  (let [body (::txt/body paragraph)
-        blank (->> " " (repeat width) (apply str))]
-    (assoc paragraph ::txt/body (-> body (str blank) (subs 0 width)))))
+  (let [padding          #::txt{:style [] :body (->> " " (repeat width) (apply str))}
+        paragraph+pading (conj paragraph padding)]
+    (reduce (partial into-paragraph width) [] paragraph+pading)))
 
 (s/fdef with-width*
   :args (s/cat :width ::width :paragraph ::txt/paragraph)
@@ -106,12 +122,23 @@
   :args (s/cat :style ::txt/style)
   :ret string?)
 
-(defn ^:private paragraph->string
-  "Renders a paragraph into a printable string."
+(defn ^:private segment->string
+  "Renders a segment into a printable string."
   [{:keys [::txt/style ::txt/body]}]
   (if (empty? style)
     body
     (str (style->string style) body (ansi.graphics/reset))))
+
+(s/fdef segment->string
+  :args (s/cat :segment ::txt/segment)
+  :ret string?)
+
+(defn ^:private paragraph->string
+  "Renders a paragraph into a printable string."
+  [paragraph]
+  (->> paragraph
+       (map segment->string)
+       (apply str)))
 
 (s/fdef paragraph->string
   :args (s/cat :paragraph ::txt/paragraph)

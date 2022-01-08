@@ -6,8 +6,7 @@
             [pmatiello.tuia.io :as io]
             [pmatiello.tuia.text :as txt]))
 
-(use-fixtures :each fixtures/with-readable-csi)
-(use-fixtures :each fixtures/with-spec-instrumentation)
+(use-fixtures :each fixtures/with-readable-csi fixtures/with-spec-instrumentation)
 
 (defn- new-output-buf []
   (atom []))

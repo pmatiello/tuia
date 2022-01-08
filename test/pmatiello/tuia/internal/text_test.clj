@@ -5,8 +5,7 @@
             [pmatiello.tuia.internal.text :as internal.txt]
             [pmatiello.tuia.text :as txt]))
 
-(use-fixtures :each fixtures/with-readable-csi)
-(use-fixtures :each fixtures/with-spec-instrumentation)
+(use-fixtures :each fixtures/with-readable-csi fixtures/with-spec-instrumentation)
 
 (deftest loose-text->text-test
   (testing "already strict texts are unchanged"

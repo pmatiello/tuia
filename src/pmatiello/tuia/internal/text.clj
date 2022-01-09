@@ -14,35 +14,35 @@
 (s/def ::width int?)
 (s/def ::height int?)
 
-(defn ^:private loose-paragraph->paragraph
-  "Converts a loose paragraph into a strict paragraph."
-  [loose-paragraph]
+(defn ^:private loose-line->line
+  "Converts a loose line into a strict line."
+  [loose-line]
   (cond
-    (string? loose-paragraph) [{::txt/style [] ::txt/body loose-paragraph}]
-    (s/valid? ::txt/segment loose-paragraph) [loose-paragraph]
-    (s/valid? ::txt/paragraph loose-paragraph) loose-paragraph))
+    (string? loose-line) [{::txt/style [] ::txt/body loose-line}]
+    (s/valid? ::txt/segment loose-line) [loose-line]
+    (s/valid? ::txt/line loose-line) loose-line))
 
-(s/fdef loose-paragraph->paragraph
-  :args (s/cat :loose-paragraph ::txt/loose-paragraph)
-  :ret ::txt/paragraph)
+(s/fdef loose-line->line
+  :args (s/cat :loose-line ::txt/loose-line)
+  :ret ::txt/line)
 
 (defn loose-text->text
   "Converts a loose text into a strict text."
   [loose-text]
-  (map loose-paragraph->paragraph loose-text))
+  (map loose-line->line loose-text))
 
 (s/fdef loose-text->text
   :args (s/cat :loose-text ::txt/loose-text)
   :ret ::txt/text)
 
-(def ^:private blank-paragraph
+(def ^:private blank-line
   [{::txt/style [] ::txt/body ""}])
 
 (defn ^:private with-height
   "Crops the text at the given height.
   Completes remaining rows with blank characters."
   [height text]
-  (let [blank (repeat height blank-paragraph)]
+  (let [blank (repeat height blank-line)]
     (->> (concat text blank)
          (take height))))
 
@@ -50,32 +50,32 @@
   :args (s/cat :height ::height :text ::txt/text)
   :ret ::txt/text)
 
-(defn ^:private into-paragraph
-  "Accumulates segments into a paragraph of a maximum width.
+(defn ^:private into-line
+  "Accumulates segments into a line of a maximum width.
   Crops all chars beyond the maximum width."
-  [max-width paragraph {:keys [::txt/style ::txt/body]}]
-  (let [curr-width      (->> paragraph (map ::txt/body) (map count) (reduce +))
+  [max-width line {:keys [::txt/style ::txt/body]}]
+  (let [curr-width      (->> line (map ::txt/body) (map count) (reduce +))
         remaining-width (- max-width curr-width)
         selected-size   (min remaining-width (count body))
         selected-text   (subs body 0 selected-size)
         new-segment     #::txt{:style (or style []) :body selected-text}]
-    (conj paragraph new-segment)))
+    (conj line new-segment)))
 
-(s/fdef into-paragraph
-  :args (s/cat :width int? :paragraph ::txt/paragraph :segment ::txt/segment)
-  :ret ::txt/paragraph)
+(s/fdef into-line
+  :args (s/cat :width int? :line ::txt/line :segment ::txt/segment)
+  :ret ::txt/line)
 
 (defn ^:private with-width*
-  "Crops the paragraph at the given width.
+  "Crops the line at the given width.
   Completes remaining columns with blank characters."
-  [width paragraph]
-  (let [padding          #::txt{:style [] :body (->> " " (repeat width) (apply str))}
-        paragraph+pading (conj paragraph padding)]
-    (reduce (partial into-paragraph width) [] paragraph+pading)))
+  [width line]
+  (let [padding     #::txt{:style [] :body (->> " " (repeat width) (apply str))}
+        line+pading (conj line padding)]
+    (reduce (partial into-line width) [] line+pading)))
 
 (s/fdef with-width*
-  :args (s/cat :width ::width :paragraph ::txt/paragraph)
-  :ret ::txt/paragraph)
+  :args (s/cat :width ::width :line ::txt/line)
+  :ret ::txt/line)
 
 (defn ^:private with-width
   "Crops the text at the given width.
@@ -134,15 +134,15 @@
   :args (s/cat :segment ::txt/segment)
   :ret string?)
 
-(defn ^:private paragraph->string
-  "Renders a paragraph into a printable string."
-  [paragraph]
-  (->> paragraph
+(defn ^:private line->string
+  "Renders a line into a printable string."
+  [line]
+  (->> line
        (map segment->string)
        (apply str)))
 
-(s/fdef paragraph->string
-  :args (s/cat :paragraph ::txt/paragraph)
+(s/fdef line->string
+  :args (s/cat :line ::txt/line)
   :ret string?)
 
 (defn text->page
@@ -151,7 +151,7 @@
   (->> text
        (with-height height)
        (with-width width)
-       (map paragraph->string)))
+       (map line->string)))
 
 (s/fdef text->page
   :args (s/cat :text ::txt/text :settings ::render-settings)

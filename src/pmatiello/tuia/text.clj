@@ -2,12 +2,12 @@
   (:require [clojure.spec.alpha :as s]))
 
 (s/def ::text
-  (s/and sequential? (s/coll-of ::paragraph)))
+  (s/and sequential? (s/coll-of ::line)))
 
 (s/def ::loose-text
-  (s/and sequential? (s/coll-of ::loose-paragraph)))
+  (s/and sequential? (s/coll-of ::loose-line)))
 
-(s/def ::paragraph
+(s/def ::line
   (s/and sequential? (s/coll-of ::segment)))
 
 (s/def ::segment
@@ -21,10 +21,10 @@
 
 (s/def ::body string?)
 
-(s/def ::loose-paragraph
+(s/def ::loose-line
   (s/or :string string?
         :segment ::segment
-        :paragraph ::paragraph))
+        :line ::line))
 
 (s/def ::emphasis
   #{::bold ::underline ::blink})

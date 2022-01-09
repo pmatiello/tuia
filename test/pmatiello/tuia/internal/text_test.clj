@@ -87,7 +87,7 @@
                                      [#::txt{:style [::txt/bg-yellow] :body "yellow"}]]
                                     #::internal.txt{:width 6 :height 2}))))
 
-  (testing "renders multiple styles in the same paragraph"
+  (testing "renders multiple styles in the same line"
     (is (= [(str (ansi.graphics/fg-blue) "blue" (ansi.graphics/reset) " "
                  (ansi.graphics/fg-green) "green" (ansi.graphics/reset) "  ")
             (str (ansi.graphics/bg-white) "white" (ansi.graphics/reset) " "

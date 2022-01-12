@@ -35,10 +35,10 @@
   [output-buf text window]
   (let [{::keys [row column width height]} window
         render-settings #::internal.txt{:width width :height height}
-        page (-> text
-                 internal.txt/loose-text->text
-                 (internal.txt/text->page render-settings))
-        indexed-lines (map vector (range) page)]
+        rendered-text   (-> text
+                            internal.txt/loose-text->text
+                            (internal.txt/render render-settings))
+        indexed-lines   (map vector (range) rendered-text)]
     (doseq [[offset ^String line] indexed-lines]
       (into-output-buf! output-buf (str (cursor/position (+ row offset) column) line)))))
 

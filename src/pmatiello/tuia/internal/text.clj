@@ -4,7 +4,7 @@
             [pmatiello.tuia.internal.ansi.graphics :as ansi.graphics]
             [pmatiello.tuia.text :as txt]))
 
-(s/def ::page
+(s/def ::rendered-text
   string?)
 
 (s/def ::render-settings
@@ -145,7 +145,7 @@
   :args (s/cat :line ::txt/line)
   :ret string?)
 
-(defn text->page
+(defn render
   "Renders text into a printable string."
   [text {::keys [width height]}]
   (->> text
@@ -153,6 +153,6 @@
        (with-width width)
        (map line->string)))
 
-(s/fdef text->page
+(s/fdef render
   :args (s/cat :text ::txt/text :settings ::render-settings)
-  :ret ::page)
+  :ret ::rendered-text)

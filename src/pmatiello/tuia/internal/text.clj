@@ -1,7 +1,7 @@
 (ns pmatiello.tuia.internal.text
   (:require [clojure.spec.alpha :as s]
             [clojure.string :as string]
-            [pmatiello.tuia.internal.ansi.graphics :as ansi.graphics]
+            [pmatiello.tuia.internal.ansi.graphics :as graphics]
             [pmatiello.tuia.text :as txt]))
 
 (s/def ::rendered-text
@@ -35,14 +35,11 @@
   :args (s/cat :loose-text ::txt/loose-text)
   :ret ::txt/text)
 
-(def ^:private blank-line
-  [{::txt/style [] ::txt/body ""}])
-
 (defn ^:private with-height
   "Crops the text at the given height.
   Completes remaining rows with blank characters."
   [height text]
-  (let [blank (repeat height blank-line)]
+  (let [blank (repeat height [])]
     (->> (concat text blank)
          (take height))))
 
@@ -89,27 +86,27 @@
   :ret ::txt/text)
 
 (def ^:private style->string*
-  {::txt/bold       ansi.graphics/bold
-   ::txt/underline  ansi.graphics/underline
-   ::txt/blink      ansi.graphics/slow-blink
-   ::txt/fg-black   ansi.graphics/fg-black
-   ::txt/fg-red     ansi.graphics/fg-red
-   ::txt/fg-green   ansi.graphics/fg-green
-   ::txt/fg-yellow  ansi.graphics/fg-yellow
-   ::txt/fg-blue    ansi.graphics/fg-blue
-   ::txt/fg-purple  ansi.graphics/fg-purple
-   ::txt/fg-cyan    ansi.graphics/fg-cyan
-   ::txt/fg-white   ansi.graphics/fg-white
-   ::txt/fg-default ansi.graphics/fg-default
-   ::txt/bg-black   ansi.graphics/bg-black
-   ::txt/bg-red     ansi.graphics/bg-red
-   ::txt/bg-green   ansi.graphics/bg-green
-   ::txt/bg-yellow  ansi.graphics/bg-yellow
-   ::txt/bg-blue    ansi.graphics/bg-blue
-   ::txt/bg-purple  ansi.graphics/bg-purple
-   ::txt/bg-cyan    ansi.graphics/bg-cyan
-   ::txt/bg-white   ansi.graphics/bg-white
-   ::txt/bg-default ansi.graphics/bg-default})
+  {::txt/bold       graphics/bold
+   ::txt/underline  graphics/underline
+   ::txt/blink      graphics/slow-blink
+   ::txt/fg-black   graphics/fg-black
+   ::txt/fg-red     graphics/fg-red
+   ::txt/fg-green   graphics/fg-green
+   ::txt/fg-yellow  graphics/fg-yellow
+   ::txt/fg-blue    graphics/fg-blue
+   ::txt/fg-purple  graphics/fg-purple
+   ::txt/fg-cyan    graphics/fg-cyan
+   ::txt/fg-white   graphics/fg-white
+   ::txt/fg-default graphics/fg-default
+   ::txt/bg-black   graphics/bg-black
+   ::txt/bg-red     graphics/bg-red
+   ::txt/bg-green   graphics/bg-green
+   ::txt/bg-yellow  graphics/bg-yellow
+   ::txt/bg-blue    graphics/bg-blue
+   ::txt/bg-purple  graphics/bg-purple
+   ::txt/bg-cyan    graphics/bg-cyan
+   ::txt/bg-white   graphics/bg-white
+   ::txt/bg-default graphics/bg-default})
 
 (defn ^:private style->string
   "Renders the ANSI codes for the given style"
@@ -126,9 +123,7 @@
 (defn ^:private segment->string
   "Renders a segment into a printable string."
   [{:keys [::txt/style ::txt/body]}]
-  (if (empty? style)
-    body
-    (str (style->string style) body (ansi.graphics/reset))))
+  (str (graphics/reset) (style->string style) body))
 
 (s/fdef segment->string
   :args (s/cat :segment ::txt/segment)

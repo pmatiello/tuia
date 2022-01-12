@@ -2,6 +2,7 @@
   (:require [clojure.test :refer :all]
             [pmatiello.tuia.internal.ansi.cursor :as cursor]
             [pmatiello.tuia.internal.ansi.erase :as erase]
+            [pmatiello.tuia.internal.ansi.graphics :as graphics]
             [pmatiello.tuia.internal.fixtures :as fixtures]
             [pmatiello.tuia.io :as io]
             [pmatiello.tuia.text :as txt]))
@@ -17,8 +18,8 @@
       (io/print! output-buf
                  ["line1" "line2"]
                  #::io{:row 4 :column 3 :width 5 :height 2})
-      (is (= [(str (cursor/position 4 3) "line1")
-              (str (cursor/position 5 3) "line2")]
+      (is (= [(str (cursor/position 4 3) (graphics/reset) "line1" (graphics/reset))
+              (str (cursor/position 5 3) (graphics/reset) "line2" (graphics/reset))]
              @output-buf))))
 
   (testing "prints strict text at location"
@@ -27,8 +28,8 @@
                  [[#::txt{:style [] :body "line1"}]
                   [#::txt{:style [] :body "line2"}]]
                  #::io{:row 4 :column 3 :width 5 :height 2})
-      (is (= [(str (cursor/position 4 3) "line1")
-              (str (cursor/position 5 3) "line2")]
+      (is (= [(str (cursor/position 4 3) (graphics/reset) "line1" (graphics/reset))
+              (str (cursor/position 5 3) (graphics/reset) "line2" (graphics/reset))]
              @output-buf))))
 
   (testing "prints only the given height"
@@ -36,8 +37,8 @@
       (io/print! output-buf
                  ["line1" "line2" "ignored"]
                  #::io{:row 4 :column 3 :width 5 :height 2})
-      (is (= [(str (cursor/position 4 3) "line1")
-              (str (cursor/position 5 3) "line2")]
+      (is (= [(str (cursor/position 4 3) (graphics/reset) "line1" (graphics/reset))
+              (str (cursor/position 5 3) (graphics/reset) "line2" (graphics/reset))]
              @output-buf))))
 
   (testing "fills missing height in text with blank space"
@@ -45,9 +46,9 @@
       (io/print! output-buf
                  ["line1" "line2"]
                  #::io{:row 4 :column 3 :width 5 :height 3})
-      (is (= [(str (cursor/position 4 3) "line1")
-              (str (cursor/position 5 3) "line2")
-              (str (cursor/position 6 3) "     ")]
+      (is (= [(str (cursor/position 4 3) (graphics/reset) "line1" (graphics/reset))
+              (str (cursor/position 5 3) (graphics/reset) "line2" (graphics/reset))
+              (str (cursor/position 6 3) (graphics/reset) "     ")]
              @output-buf))))
 
   (testing "prints only the given width"
@@ -55,8 +56,8 @@
       (io/print! output-buf
                  ["line1-ignored" "line2-ignored"]
                  #::io{:row 4 :column 3 :width 5 :height 2})
-      (is (= [(str (cursor/position 4 3) "line1")
-              (str (cursor/position 5 3) "line2")]
+      (is (= [(str (cursor/position 4 3) (graphics/reset) "line1" (graphics/reset))
+              (str (cursor/position 5 3) (graphics/reset) "line2" (graphics/reset))]
              @output-buf))))
 
   (testing "fills missing width in text with blank space"
@@ -64,8 +65,8 @@
       (io/print! output-buf
                  ["line1" "line2"]
                  #::io{:row 4 :column 3 :width 8 :height 2})
-      (is (= [(str (cursor/position 4 3) "line1   ")
-              (str (cursor/position 5 3) "line2   ")]
+      (is (= [(str (cursor/position 4 3) (graphics/reset) "line1" (graphics/reset) "   ")
+              (str (cursor/position 5 3) (graphics/reset) "line2" (graphics/reset) "   ")]
              @output-buf)))))
 
 (deftest clear-screen!-test

@@ -12,7 +12,8 @@
          #(s/valid? ::internal.io/output-buf @%)))
 
 (s/def ::window
-  (s/keys :req [::row ::column ::width ::height]))
+  (s/keys :req [::row ::column ::width ::height]
+          :opt [::style]))
 
 (s/def ::coordinates
   (s/keys :req [::row ::column]))
@@ -21,6 +22,7 @@
 (s/def ::column int?)
 (s/def ::width int?)
 (s/def ::height int?)
+(s/def ::style ::txt/style)
 
 (defn- into-output-buf!
   "Appends the given string to the output buffer."
@@ -33,8 +35,8 @@
 (defn print!
   "Prints the given text to the output buffer at the given window."
   [output-buf text window]
-  (let [{::keys [row column width height]} window
-        render-settings #::internal.txt{:width width :height height}
+  (let [{::keys [row column width height style]} window
+        render-settings #::internal.txt{:width width :height height :style style}
         rendered-text   (-> text
                             internal.txt/loose-text->text
                             (internal.txt/render render-settings))

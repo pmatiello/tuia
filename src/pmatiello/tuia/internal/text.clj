@@ -9,10 +9,11 @@
 
 (s/def ::render-settings
   (s/keys :req [::width ::height]
-          :opt [::default-style]))
+          :opt [::style]))
 
 (s/def ::width int?)
 (s/def ::height int?)
+(s/def ::style (s/or :nil nil? :style ::txt/style))
 
 (defn ^:private loose-line->line
   "Converts a loose line into a strict line."
@@ -86,27 +87,30 @@
   :ret ::txt/text)
 
 (def ^:private style->string*
-  {::txt/bold       graphics/bold
-   ::txt/underline  graphics/underline
-   ::txt/blink      graphics/slow-blink
-   ::txt/fg-black   graphics/fg-black
-   ::txt/fg-red     graphics/fg-red
-   ::txt/fg-green   graphics/fg-green
-   ::txt/fg-yellow  graphics/fg-yellow
-   ::txt/fg-blue    graphics/fg-blue
-   ::txt/fg-purple  graphics/fg-purple
-   ::txt/fg-cyan    graphics/fg-cyan
-   ::txt/fg-white   graphics/fg-white
-   ::txt/fg-default graphics/fg-default
-   ::txt/bg-black   graphics/bg-black
-   ::txt/bg-red     graphics/bg-red
-   ::txt/bg-green   graphics/bg-green
-   ::txt/bg-yellow  graphics/bg-yellow
-   ::txt/bg-blue    graphics/bg-blue
-   ::txt/bg-purple  graphics/bg-purple
-   ::txt/bg-cyan    graphics/bg-cyan
-   ::txt/bg-white   graphics/bg-white
-   ::txt/bg-default graphics/bg-default})
+  {::txt/bold          graphics/bold
+   ::txt/bold-off      graphics/weight-off
+   ::txt/underline     graphics/underline
+   ::txt/underline-off graphics/underline-off
+   ::txt/blink         graphics/slow-blink
+   ::txt/blink-off     graphics/blink-off
+   ::txt/fg-black      graphics/fg-black
+   ::txt/fg-red        graphics/fg-red
+   ::txt/fg-green      graphics/fg-green
+   ::txt/fg-yellow     graphics/fg-yellow
+   ::txt/fg-blue       graphics/fg-blue
+   ::txt/fg-purple     graphics/fg-purple
+   ::txt/fg-cyan       graphics/fg-cyan
+   ::txt/fg-white      graphics/fg-white
+   ::txt/fg-default    graphics/fg-default
+   ::txt/bg-black      graphics/bg-black
+   ::txt/bg-red        graphics/bg-red
+   ::txt/bg-green      graphics/bg-green
+   ::txt/bg-yellow     graphics/bg-yellow
+   ::txt/bg-blue       graphics/bg-blue
+   ::txt/bg-purple     graphics/bg-purple
+   ::txt/bg-cyan       graphics/bg-cyan
+   ::txt/bg-white      graphics/bg-white
+   ::txt/bg-default    graphics/bg-default})
 
 (defn ^:private style->string
   "Renders the ANSI codes for the given style"
@@ -122,31 +126,33 @@
 
 (defn ^:private segment->string
   "Renders a segment into a printable string."
-  [{:keys [::txt/style ::txt/body]}]
-  (str (graphics/reset) (style->string style) body))
+  [base-style {:keys [::txt/style ::txt/body]}]
+  (if (not-empty body)
+    (str (graphics/reset) (style->string base-style) (style->string style) body)))
 
 (s/fdef segment->string
-  :args (s/cat :segment ::txt/segment)
+  :args (s/cat :base-style ::txt/style :segment ::txt/segment)
   :ret string?)
 
 (defn ^:private line->string
   "Renders a line into a printable string."
-  [line]
+  [base-style line]
   (->> line
-       (map segment->string)
+       (map #(segment->string base-style %))
        (apply str)))
 
 (s/fdef line->string
-  :args (s/cat :line ::txt/line)
+  :args (s/cat :base-style ::txt/style :line ::txt/line)
   :ret string?)
 
 (defn render
   "Renders text into a printable string."
-  [text {::keys [width height]}]
-  (->> text
-       (with-height height)
-       (with-width width)
-       (map line->string)))
+  [text {::keys [width height style]}]
+  (let [base-style (or style [])]
+    (->> text
+         (with-height height)
+         (with-width width)
+         (map #(line->string base-style %)))))
 
 (s/fdef render
   :args (s/cat :text ::txt/text :settings ::render-settings)

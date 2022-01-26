@@ -27,7 +27,9 @@
         :line ::line))
 
 (s/def ::emphasis
-  #{::bold ::underline ::blink})
+  #{::bold ::bold-off
+    ::underline ::underline-off
+    ::blink ::blink-off})
 
 (s/def ::fg-color
   #{::fg-black ::fg-red ::fg-green ::fg-yellow

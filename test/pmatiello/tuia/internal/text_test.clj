@@ -36,15 +36,15 @@
 
 (deftest render-test
   (testing "renders plain text"
-    (is (= [(str (graphics/reset) "plain" (graphics/reset))
-            (str (graphics/reset) "text!" (graphics/reset))]
+    (is (= [(str (graphics/reset) "plain")
+            (str (graphics/reset) "text!")]
            (internal.txt/render [[#::txt{:style [] :body "plain"}]
                                  [#::txt{:style [] :body "text!"}]]
                                 #::internal.txt{:width 5 :height 2}))))
 
   (testing "restricts text to the given width"
-    (is (= [(str (graphics/reset) "plain" (graphics/reset))
-            (str (graphics/reset) "text!" (graphics/reset))]
+    (is (= [(str (graphics/reset) "plain")
+            (str (graphics/reset) "text!")]
            (internal.txt/render [[#::txt{:style [] :body "plainCROPPED"}]
                                  [#::txt{:style [] :body "text!CROPPED"}]]
                                 #::internal.txt{:width 5 :height 2}))))
@@ -57,23 +57,23 @@
                                 #::internal.txt{:width 8 :height 2}))))
 
   (testing "restricts text to the given height"
-    (is (= [(str (graphics/reset) "plain" (graphics/reset))
-            (str (graphics/reset) "text!" (graphics/reset))]
+    (is (= [(str (graphics/reset) "plain")
+            (str (graphics/reset) "text!")]
            (internal.txt/render [[#::txt{:style [] :body "plain"}]
                                  [#::txt{:style [] :body "text!"}]
                                  [#::txt{:style [] :body "CROP!"}]]
                                 #::internal.txt{:width 5 :height 2}))))
 
   (testing "fills missing height in text with blank space"
-    (is (= [(str (graphics/reset) "plain" (graphics/reset))
-            (str (graphics/reset) "text!" (graphics/reset))
+    (is (= [(str (graphics/reset) "plain")
+            (str (graphics/reset) "text!")
             (str (graphics/reset) "     ")]
            (internal.txt/render [[#::txt{:style [] :body "plain"}]
                                  [#::txt{:style [] :body "text!"}]]
                                 #::internal.txt{:width 5 :height 3}))))
 
   (testing "renders with emphasis"
-    (is (= [(str (graphics/reset) (graphics/bold) (graphics/slow-blink) "bold blink" (graphics/reset))
+    (is (= [(str (graphics/reset) (graphics/bold) (graphics/slow-blink) "bold blink")
             (str (graphics/reset) (graphics/underline) "underline" (graphics/reset) " ")]
            (internal.txt/render [[#::txt{:style [::txt/bold ::txt/blink] :body "bold blink"}]
                                  [#::txt{:style [::txt/underline] :body "underline"}]]
@@ -81,14 +81,14 @@
 
   (testing "renders with foreground colors"
     (is (= [(str (graphics/reset) (graphics/fg-blue) "blue" (graphics/reset) " ")
-            (str (graphics/reset) (graphics/fg-green) "green" (graphics/reset))]
+            (str (graphics/reset) (graphics/fg-green) "green")]
            (internal.txt/render [[#::txt{:style [::txt/fg-blue] :body "blue"}]
                                  [#::txt{:style [::txt/fg-green] :body "green"}]]
                                 #::internal.txt{:width 5 :height 2}))))
 
   (testing "renders with background colors"
     (is (= [(str (graphics/reset) (graphics/bg-white) "white" (graphics/reset) " ")
-            (str (graphics/reset) (graphics/bg-yellow) "yellow" (graphics/reset))]
+            (str (graphics/reset) (graphics/bg-yellow) "yellow")]
            (internal.txt/render [[#::txt{:style [::txt/bg-white] :body "white"}]
                                  [#::txt{:style [::txt/bg-yellow] :body "yellow"}]]
                                 #::internal.txt{:width 6 :height 2}))))
@@ -97,11 +97,19 @@
     (is (= [(str (graphics/reset) (graphics/fg-blue) "blue" (graphics/reset) " "
                  (graphics/reset) (graphics/fg-green) "green" (graphics/reset) "  ")
             (str (graphics/reset) (graphics/bg-white) "white" (graphics/reset) " "
-                 (graphics/reset) (graphics/bg-yellow) "yellow" (graphics/reset))]
+                 (graphics/reset) (graphics/bg-yellow) "yellow")]
            (internal.txt/render [[#::txt{:style [::txt/fg-blue] :body "blue"}
                                   #::txt{:style [] :body " "}
                                   #::txt{:style [::txt/fg-green] :body "green"}]
                                  [#::txt{:style [::txt/bg-white] :body "white"}
                                   #::txt{:style [] :body " "}
                                   #::txt{:style [::txt/bg-yellow] :body "yellow"}]]
-                                #::internal.txt{:width 12 :height 2})))))
+                                #::internal.txt{:width 12 :height 2}))))
+
+  (testing "renders with a custom base style"
+    (is (= [(str (graphics/reset) (graphics/bg-white) (graphics/fg-blue) "blue"
+                 (graphics/reset) (graphics/bg-white) "!")
+            (str (graphics/reset) (graphics/bg-white) "     ")]
+           (internal.txt/render [[#::txt{:style [::txt/fg-blue] :body "blue"}
+                                  #::txt{:style [] :body "!"}]]
+                                #::internal.txt{:width 5 :height 2 :style [::txt/bg-white]})))))

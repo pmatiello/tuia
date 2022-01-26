@@ -14,11 +14,19 @@
    #::txt {:style [::txt/fg-blue] :body "Type to produce events."}
    "Enter Ctrl+D to quit."])
 
-(defn- full-render? [old new]
+(defn- full-render?
+  [old new]
   (or (nil? (::tuia.event/init old))
       (not= (::tuia.event/size old) (::tuia.event/size new))))
 
-(defn- render [output old-state new-state]
+(defn event->text
+  [{:keys [::tuia.event/type ::tuia.event/value]}]
+  [#::txt{:style [::txt/fg-blue] :body (str type)}
+   #::txt{:style [::txt/fg-blue] :body ": "}
+   #::txt{:style [::txt/bold-off] :body (str value)}])
+
+(defn- render
+  [output old-state new-state]
   (when (full-render? old-state new-state)
     (tuia.io/hide-cursor! output)
     (tuia.io/clear-screen! output)
@@ -28,18 +36,20 @@
   (when (::tuia.event/halt new-state)
     (tuia.io/show-cursor! output))
 
-  (tuia.io/print! output (map str (:events new-state))
-                  #::tuia.io{:row 5 :column 1 :width 80 :height 6})
+  (tuia.io/print! output (map event->text (:events new-state))
+                  #::tuia.io{:row 5 :column 1 :width 80 :height 5 :style [::txt/bold ::txt/bg-white]})
   (tuia.io/place-cursor! output #::tuia.io{:row 10 :column 1}))
 
-(defn handle [event]
+(defn handle
+  [event]
   (swap! state assoc :events
          (->> event (conj (:events @state)) (take 5)))
 
   (when (-> event ::tuia.event/value #{:eot})
     (throw (ex-info "Interrupted" {:cause :interrupted}))))
 
-(defn -main []
+(defn -main
+  []
   (stest/instrument)
   (try
     (tuia.core/init! handle render state)

@@ -1,5 +1,6 @@
 (ns pmatiello.tuia.internal.io
   (:require [clojure.spec.alpha :as s]
+            [pmatiello.tuia.internal.ansi.graphics :as graphics]
             [pmatiello.tuia.internal.stty :as stty])
   (:import (java.io Writer)))
 
@@ -8,6 +9,7 @@
 (defn write!
   "Writes the output buffer into given writer."
   [^Writer writer output-buf]
+  (.append writer ^String (graphics/reset))
   (doseq [^String each output-buf]
     (.append writer each))
   (.flush writer))

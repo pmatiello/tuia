@@ -52,8 +52,8 @@
 
   handle-fn: input event handler function.
   render-fn: output rendering function.
-  state: mutable application state
-  input: sequence of input events
+  state: mutable application state.
+  input: sequence of input events.
   output!: function for writing to the output stream."
   [handle-fn render-fn state input output!]
   (try

@@ -33,7 +33,19 @@
   :args (s/cat :output-buf ::output-buf :payload string?))
 
 (defn print!
-  "Prints the given text to the output buffer at the given window."
+  "Prints the given text to the output buffer at the given window.
+
+  output-buf: mutable buffer accumulating writes to the output.
+
+  text: text to be printed.
+
+  window: a map describing a rectangle in the screen where the text will be printed
+  with the following entries:
+    - row: the row of the window's top-most row in the screen.
+    - column: the column of the window's left-most column in the screen.
+    - width: the window's width.
+    - height: the window's height.
+    - style: base style for the window (optional)."
   [output-buf text window]
   (let [{::keys [row column width height style]} window
         render-settings #::internal.txt{:width width :height height :style style}
@@ -48,7 +60,9 @@
   :args (s/cat :output-buf ::output-buf :text ::txt/loose-text :window ::window))
 
 (defn clear-screen!
-  "Clears the screen completely."
+  "Clears the screen completely.
+
+  output-buf: mutable buffer accumulating writes to the output."
   [output-buf]
   (into-output-buf! output-buf (erase/all))
   (into-output-buf! output-buf (cursor/position 1 1)))
@@ -57,7 +71,9 @@
   :args (s/cat :output-buf ::output-buf))
 
 (defn show-cursor!
-  "Makes the cursor visible."
+  "Makes the cursor visible.
+
+  output-buf: mutable buffer accumulating writes to the output."
   [output-buf]
   (into-output-buf! output-buf (cursor/show)))
 
@@ -65,7 +81,9 @@
   :args (s/cat :output-buf ::output-buf))
 
 (defn hide-cursor!
-  "Makes the cursor invisible."
+  "Makes the cursor invisible.
+
+  output-buf: mutable buffer accumulating writes to the output."
   [output-buf]
   (into-output-buf! output-buf (cursor/hide)))
 
@@ -73,7 +91,14 @@
   :args (s/cat :output-buf ::output-buf))
 
 (defn place-cursor!
-  "Places the cursor at the given coordinates."
+  "Places the cursor at the given coordinates.
+
+  output-buf: mutable buffer accumulating writes to the output.
+
+  coordinates: a map with the coordinates for placing the cursor
+  with the following entries:
+    - row.
+    - column."
   [output-buf coordinates]
   (let [{::keys [column row]} coordinates]
     (into-output-buf! output-buf (cursor/position row column))))

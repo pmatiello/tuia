@@ -12,7 +12,8 @@
          #(s/valid? ::internal.io/output-buf @%)))
 
 (s/def ::window
-  (s/keys :req [::row ::column ::width ::height]))
+  (s/keys :req [::row ::column ::width ::height]
+          :opt [::style]))
 
 (s/def ::coordinates
   (s/keys :req [::row ::column]))
@@ -21,6 +22,7 @@
 (s/def ::column int?)
 (s/def ::width int?)
 (s/def ::height int?)
+(s/def ::style ::txt/style)
 
 (defn- into-output-buf!
   "Appends the given string to the output buffer."
@@ -31,14 +33,26 @@
   :args (s/cat :output-buf ::output-buf :payload string?))
 
 (defn print!
-  "Prints the given text to the output buffer at the given window."
+  "Prints the given text to the output buffer at the given window.
+
+  output-buf: mutable buffer accumulating writes to the output.
+
+  text: text to be printed.
+
+  window: a map describing a rectangle in the screen where the text will be printed
+  with the following entries:
+    - row: the row of the window's top-most row in the screen.
+    - column: the column of the window's left-most column in the screen.
+    - width: the window's width.
+    - height: the window's height.
+    - style: base style for the window (optional)."
   [output-buf text window]
-  (let [{::keys [row column width height]} window
-        render-settings #::internal.txt{:width width :height height}
-        page (-> text
-                 internal.txt/loose-text->text
-                 (internal.txt/text->page render-settings))
-        indexed-lines (map vector (range) page)]
+  (let [{::keys [row column width height style]} window
+        render-settings #::internal.txt{:width width :height height :style style}
+        rendered-text   (-> text
+                            internal.txt/loose-text->text
+                            (internal.txt/render render-settings))
+        indexed-lines   (map vector (range) rendered-text)]
     (doseq [[offset ^String line] indexed-lines]
       (into-output-buf! output-buf (str (cursor/position (+ row offset) column) line)))))
 
@@ -46,32 +60,45 @@
   :args (s/cat :output-buf ::output-buf :text ::txt/loose-text :window ::window))
 
 (defn clear-screen!
-  "Clears the screen completely."
+  "Clears the screen completely.
+
+  output-buf: mutable buffer accumulating writes to the output."
   [output-buf]
-  (into-output-buf! output-buf erase/all)
+  (into-output-buf! output-buf (erase/all))
   (into-output-buf! output-buf (cursor/position 1 1)))
 
 (s/fdef clear-screen!
   :args (s/cat :output-buf ::output-buf))
 
 (defn show-cursor!
-  "Makes the cursor visible."
+  "Makes the cursor visible.
+
+  output-buf: mutable buffer accumulating writes to the output."
   [output-buf]
-  (into-output-buf! output-buf cursor/show))
+  (into-output-buf! output-buf (cursor/show)))
 
 (s/fdef show-cursor!
   :args (s/cat :output-buf ::output-buf))
 
 (defn hide-cursor!
-  "Makes the cursor invisible."
+  "Makes the cursor invisible.
+
+  output-buf: mutable buffer accumulating writes to the output."
   [output-buf]
-  (into-output-buf! output-buf cursor/hide))
+  (into-output-buf! output-buf (cursor/hide)))
 
 (s/fdef hide-cursor!
   :args (s/cat :output-buf ::output-buf))
 
 (defn place-cursor!
-  "Places the cursor at the given coordinates."
+  "Places the cursor at the given coordinates.
+
+  output-buf: mutable buffer accumulating writes to the output.
+
+  coordinates: a map with the coordinates for placing the cursor
+  with the following entries:
+    - row.
+    - column."
   [output-buf coordinates]
   (let [{::keys [column row]} coordinates]
     (into-output-buf! output-buf (cursor/position row column))))

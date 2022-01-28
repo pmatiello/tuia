@@ -2,12 +2,15 @@
   (:require [clojure.spec.alpha :as s]))
 
 (s/def ::text
-  (s/and sequential? (s/coll-of ::paragraph)))
+  (s/and sequential? (s/coll-of ::line)))
 
 (s/def ::loose-text
-  (s/and sequential? (s/coll-of ::loose-paragraph)))
+  (s/and sequential? (s/coll-of ::loose-line)))
 
-(s/def ::paragraph
+(s/def ::line
+  (s/and sequential? (s/coll-of ::segment)))
+
+(s/def ::segment
   (s/keys :req [::style ::body]))
 
 (s/def ::style
@@ -18,11 +21,15 @@
 
 (s/def ::body string?)
 
-(s/def ::loose-paragraph
-  (s/or :string string? :paragraph ::paragraph))
+(s/def ::loose-line
+  (s/or :string string?
+        :segment ::segment
+        :line ::line))
 
 (s/def ::emphasis
-  #{::bold ::underline ::blink})
+  #{::bold ::bold-off
+    ::underline ::underline-off
+    ::blink ::blink-off})
 
 (s/def ::fg-color
   #{::fg-black ::fg-red ::fg-green ::fg-yellow

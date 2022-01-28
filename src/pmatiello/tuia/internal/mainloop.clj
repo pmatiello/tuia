@@ -42,7 +42,7 @@
 (defn- tty-size?!
   "Requests tty size."
   [output! _signal]
-  (output! [(cursor/position 9999 9999) cursor/current-position]))
+  (output! [(cursor/position 9999 9999) (cursor/current-position)]))
 
 (s/fdef tty-size?!
   :args (s/cat :output! fn? :_signal any?))
@@ -52,8 +52,8 @@
 
   handle-fn: input event handler function.
   render-fn: output rendering function.
-  state: mutable application state
-  input: sequence of input events
+  state: mutable application state.
+  input: sequence of input events.
   output!: function for writing to the output stream."
   [handle-fn render-fn state input output!]
   (try

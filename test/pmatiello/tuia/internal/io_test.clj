@@ -1,12 +1,13 @@
 (ns pmatiello.tuia.internal.io-test
   (:require [clojure.test :refer :all]
             [mockfn.clj-test :as mfn]
+            [pmatiello.tuia.internal.ansi.graphics :as graphics]
             [pmatiello.tuia.internal.fixtures :as fixtures]
             [pmatiello.tuia.internal.io :as io]
             [pmatiello.tuia.internal.stty :as stty])
   (:import (java.io StringWriter)))
 
-(use-fixtures :each fixtures/with-spec-instrumentation)
+(use-fixtures :each fixtures/with-readable-csi fixtures/with-spec-instrumentation)
 
 (defn- new-writer []
   (StringWriter.))
@@ -17,7 +18,8 @@
   (testing "writes entire payload to writer"
     (let [writer (new-writer)]
       (io/write! writer [":str1" ":str2"])
-      (is (= ":str1:str2" (str writer))))))
+      (is (= (str (graphics/reset) ":str1:str2")
+             (str writer))))))
 
 (mfn/deftest with-raw-tty-test
   (mfn/testing "runs given body"

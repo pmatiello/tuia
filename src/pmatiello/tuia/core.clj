@@ -9,15 +9,17 @@
 (defn init!
   "Initializes the application main loop.
 
-  handle-fn: function invoked for each input event. Args:
-    - event
+  handle-fn: function invoked for each input event,
+  receiving the following arguments:
+    - event.
 
-  render-fn: function invoked for each change in state. Args:
-    - output: a ::tuia.io/output-buf object
-    - old-state: previous ::tuia.state/state
-    - new-state: updated ::tuia.state/state
+  render-fn: function invoked for each change in state,
+  receiving the following arguments:
+    - output: mutable buffer accumulating writes to the output.
+    - old-state: previous version of the application state.
+    - new-state: updated version of the application state.
 
-  state: mutable application state"
+  state: mutable application state."
   [handle-fn render-fn state]
   (let [input (input/reader->event-seq *in*)
         output! (partial io/write! *out*)]

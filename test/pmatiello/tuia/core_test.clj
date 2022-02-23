@@ -5,11 +5,10 @@
             [mockfn.matchers :as mfn.m]
             [pmatiello.tuia.core :as core]
             [pmatiello.tuia.internal.ansi.input :as input]
+            [pmatiello.tuia.internal.io :as io]
             [pmatiello.tuia.internal.mainloop :as mainloop]
-            [pmatiello.tuia.internal.stty :as stty]
-            [pmatiello.tuia.internal.io :as io])
-  (:import (java.io StringWriter)
-           (java.util.function Function)))
+            [pmatiello.tuia.internal.stty :as stty])
+  (:import (java.io StringWriter)))
 
 (defn output-fn? [writer out-fn!]
   (out-fn! ["/ok"])

@@ -30,15 +30,14 @@
   (when (full-render? old-state new-state)
     (tuia.io/hide-cursor! output)
     (tuia.io/clear-screen! output)
-    (tuia.io/print! output header
-                    #::tuia.io{:row 1 :column 1 :width 23 :height 3}))
+    (tuia.io/print! output header {:row 1 :column 1 :width 23 :height 3}))
 
   (when (::tuia.event/halt new-state)
     (tuia.io/show-cursor! output))
 
   (tuia.io/print! output (map event->text (:events new-state))
-                  #::tuia.io{:row 5 :column 1 :width 80 :height 5 :style [::txt/bold ::txt/bg-white]})
-  (tuia.io/place-cursor! output #::tuia.io{:row 10 :column 1}))
+                  {:row 5 :column 1 :width 80 :height 5 :style [::txt/bold ::txt/bg-white]})
+  (tuia.io/place-cursor! output {:row 10 :column 1}))
 
 (defn handle
   [event]

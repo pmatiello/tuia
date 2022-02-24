@@ -17,7 +17,7 @@
     (let [output-buf (new-output-buf)]
       (io/print! output-buf
                  ["line1" "line2"]
-                 #::io{:row 4 :column 3 :width 5 :height 2})
+                 {:row 4 :column 3 :width 5 :height 2})
       (is (= [(str (cursor/position 4 3) (graphics/reset) "line1")
               (str (cursor/position 5 3) (graphics/reset) "line2")]
              @output-buf))))
@@ -27,7 +27,7 @@
       (io/print! output-buf
                  [[#::txt{:style [] :body "line1"}]
                   [#::txt{:style [] :body "line2"}]]
-                 #::io{:row 4 :column 3 :width 5 :height 2})
+                 {:row 4 :column 3 :width 5 :height 2})
       (is (= [(str (cursor/position 4 3) (graphics/reset) "line1")
               (str (cursor/position 5 3) (graphics/reset) "line2")]
              @output-buf))))
@@ -36,7 +36,7 @@
     (let [output-buf (new-output-buf)]
       (io/print! output-buf
                  ["line1" "line2" "ignored"]
-                 #::io{:row 4 :column 3 :width 5 :height 2})
+                 {:row 4 :column 3 :width 5 :height 2})
       (is (= [(str (cursor/position 4 3) (graphics/reset) "line1")
               (str (cursor/position 5 3) (graphics/reset) "line2")]
              @output-buf))))
@@ -45,7 +45,7 @@
     (let [output-buf (new-output-buf)]
       (io/print! output-buf
                  ["line1" "line2"]
-                 #::io{:row 4 :column 3 :width 5 :height 3})
+                 {:row 4 :column 3 :width 5 :height 3})
       (is (= [(str (cursor/position 4 3) (graphics/reset) "line1")
               (str (cursor/position 5 3) (graphics/reset) "line2")
               (str (cursor/position 6 3) (graphics/reset) "     ")]
@@ -55,7 +55,7 @@
     (let [output-buf (new-output-buf)]
       (io/print! output-buf
                  ["line1-ignored" "line2-ignored"]
-                 #::io{:row 4 :column 3 :width 5 :height 2})
+                 {:row 4 :column 3 :width 5 :height 2})
       (is (= [(str (cursor/position 4 3) (graphics/reset) "line1")
               (str (cursor/position 5 3) (graphics/reset) "line2")]
              @output-buf))))
@@ -64,7 +64,7 @@
     (let [output-buf (new-output-buf)]
       (io/print! output-buf
                  ["line1" "line2"]
-                 #::io{:row 4 :column 3 :width 8 :height 2})
+                 {:row 4 :column 3 :width 8 :height 2})
       (is (= [(str (cursor/position 4 3) (graphics/reset) "line1" (graphics/reset) "   ")
               (str (cursor/position 5 3) (graphics/reset) "line2" (graphics/reset) "   ")]
              @output-buf)))))
@@ -95,5 +95,5 @@
 (deftest place-cursor!-test
   (testing "moves cursor to given position"
     (let [output-buf (new-output-buf)]
-      (io/place-cursor! output-buf #::io{:row 5 :column 10})
+      (io/place-cursor! output-buf {:row 5 :column 10})
       (is (= [(cursor/position 5 10)] @output-buf)))))

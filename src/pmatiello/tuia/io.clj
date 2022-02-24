@@ -12,11 +12,11 @@
          #(s/valid? ::internal.io/output-buf @%)))
 
 (s/def ::window
-  (s/keys :req [::row ::column ::width ::height]
-          :opt [::style]))
+  (s/keys :req-un [::row ::column ::width ::height]
+          :opt-un [::style]))
 
 (s/def ::coordinates
-  (s/keys :req [::row ::column]))
+  (s/keys :req-un [::row ::column]))
 
 (s/def ::row int?)
 (s/def ::column int?)
@@ -47,7 +47,7 @@
     - height: the window's height.
     - style: base style for the window (optional)."
   [output-buf text window]
-  (let [{::keys [row column width height style]} window
+  (let [{:keys [row column width height style]} window
         render-settings #::internal.txt{:width width :height height :style style}
         rendered-text   (-> text
                             internal.txt/loose-text->text
@@ -100,7 +100,7 @@
     - row.
     - column."
   [output-buf coordinates]
-  (let [{::keys [column row]} coordinates]
+  (let [{:keys [column row]} coordinates]
     (into-output-buf! output-buf (cursor/position row column))))
 
 (s/fdef place-cursor!

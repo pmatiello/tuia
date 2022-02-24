@@ -2,16 +2,15 @@
   (:require [clojure.spec.test.alpha :as stest]
             [pmatiello.tuia.core :as tuia.core]
             [pmatiello.tuia.event :as tuia.event]
-            [pmatiello.tuia.io :as tuia.io]
-            [pmatiello.tuia.text :as txt])
+            [pmatiello.tuia.io :as tuia.io])
   (:import (clojure.lang ExceptionInfo)))
 
 (def ^:private state
   (atom {:events '()}))
 
 (def ^:private header
-  [#::txt {:style [::txt/bold] :body "input-demo"}
-   #::txt {:style [::txt/fg-blue] :body "Type to produce events."}
+  [{:style [:bold] :body "input-demo"}
+   {:style [:fg-blue] :body "Type to produce events."}
    "Enter Ctrl+D to quit."])
 
 (defn- full-render?
@@ -21,9 +20,9 @@
 
 (defn event->text
   [{:keys [::tuia.event/type ::tuia.event/value]}]
-  [#::txt{:style [::txt/fg-blue] :body (str type)}
-   #::txt{:style [::txt/fg-blue] :body ": "}
-   #::txt{:style [::txt/bold-off] :body (str value)}])
+  [{:style [:fg-blue] :body (str type)}
+   {:style [:fg-blue] :body ": "}
+   {:style [:bold-off] :body (str value)}])
 
 (defn- render
   [output old-state new-state]
@@ -36,7 +35,7 @@
     (tuia.io/show-cursor! output))
 
   (tuia.io/print! output (map event->text (:events new-state))
-                  {:row 5 :column 1 :width 80 :height 5 :style [::txt/bold ::txt/bg-white]})
+                  {:row 5 :column 1 :width 80 :height 5 :style [:bold :bg-white]})
   (tuia.io/place-cursor! output {:row 10 :column 1}))
 
 (defn handle

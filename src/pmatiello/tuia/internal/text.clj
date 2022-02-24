@@ -8,8 +8,8 @@
   string?)
 
 (s/def ::render-settings
-  (s/keys :req [::width ::height]
-          :opt [::style]))
+  (s/keys :req-un [::width ::height]
+          :opt-un [::style]))
 
 (s/def ::width int?)
 (s/def ::height int?)
@@ -19,7 +19,7 @@
   "Converts a loose line into a strict line."
   [loose-line]
   (cond
-    (string? loose-line) [{::txt/style [] ::txt/body loose-line}]
+    (string? loose-line) [{:style [] :body loose-line}]
     (s/valid? ::txt/segment loose-line) [loose-line]
     (s/valid? ::txt/line loose-line) loose-line))
 
@@ -51,12 +51,12 @@
 (defn ^:private into-line
   "Accumulates segments into a line of a maximum width.
   Crops all chars beyond the maximum width."
-  [max-width line {:keys [::txt/style ::txt/body]}]
-  (let [curr-width      (->> line (map ::txt/body) (map count) (reduce +))
+  [max-width line {:keys [:style :body]}]
+  (let [curr-width      (->> line (map :body) (map count) (reduce +))
         remaining-width (- max-width curr-width)
         selected-size   (min remaining-width (count body))
         selected-text   (subs body 0 selected-size)
-        new-segment     #::txt{:style (or style []) :body selected-text}]
+        new-segment     {:style (or style []) :body selected-text}]
     (conj line new-segment)))
 
 (s/fdef into-line
@@ -67,7 +67,7 @@
   "Crops the line at the given width.
   Completes remaining columns with blank characters."
   [width line]
-  (let [padding     #::txt{:style [] :body (->> " " (repeat width) (apply str))}
+  (let [padding     {:style [] :body (->> " " (repeat width) (apply str))}
         line+pading (conj line padding)]
     (reduce (partial into-line width) [] line+pading)))
 
@@ -87,30 +87,30 @@
   :ret ::txt/text)
 
 (def ^:private style->string*
-  {::txt/bold          graphics/bold
-   ::txt/bold-off      graphics/weight-off
-   ::txt/underline     graphics/underline
-   ::txt/underline-off graphics/underline-off
-   ::txt/blink         graphics/slow-blink
-   ::txt/blink-off     graphics/blink-off
-   ::txt/fg-black      graphics/fg-black
-   ::txt/fg-red        graphics/fg-red
-   ::txt/fg-green      graphics/fg-green
-   ::txt/fg-yellow     graphics/fg-yellow
-   ::txt/fg-blue       graphics/fg-blue
-   ::txt/fg-purple     graphics/fg-purple
-   ::txt/fg-cyan       graphics/fg-cyan
-   ::txt/fg-white      graphics/fg-white
-   ::txt/fg-default    graphics/fg-default
-   ::txt/bg-black      graphics/bg-black
-   ::txt/bg-red        graphics/bg-red
-   ::txt/bg-green      graphics/bg-green
-   ::txt/bg-yellow     graphics/bg-yellow
-   ::txt/bg-blue       graphics/bg-blue
-   ::txt/bg-purple     graphics/bg-purple
-   ::txt/bg-cyan       graphics/bg-cyan
-   ::txt/bg-white      graphics/bg-white
-   ::txt/bg-default    graphics/bg-default})
+  {:bold          graphics/bold
+   :bold-off      graphics/weight-off
+   :underline     graphics/underline
+   :underline-off graphics/underline-off
+   :blink         graphics/slow-blink
+   :blink-off     graphics/blink-off
+   :fg-black      graphics/fg-black
+   :fg-red        graphics/fg-red
+   :fg-green      graphics/fg-green
+   :fg-yellow     graphics/fg-yellow
+   :fg-blue       graphics/fg-blue
+   :fg-purple     graphics/fg-purple
+   :fg-cyan       graphics/fg-cyan
+   :fg-white      graphics/fg-white
+   :fg-default    graphics/fg-default
+   :bg-black      graphics/bg-black
+   :bg-red        graphics/bg-red
+   :bg-green      graphics/bg-green
+   :bg-yellow     graphics/bg-yellow
+   :bg-blue       graphics/bg-blue
+   :bg-purple     graphics/bg-purple
+   :bg-cyan       graphics/bg-cyan
+   :bg-white      graphics/bg-white
+   :bg-default    graphics/bg-default})
 
 (defn ^:private style->string
   "Renders the ANSI codes for the given style"
@@ -126,7 +126,7 @@
 
 (defn ^:private segment->string
   "Renders a segment into a printable string."
-  [base-style {:keys [::txt/style ::txt/body]}]
+  [base-style {:keys [:style :body]}]
   (if (not-empty body)
     (str (graphics/reset) (style->string base-style) (style->string style) body)))
 
@@ -147,7 +147,7 @@
 
 (defn render
   "Renders text into a printable string."
-  [text {::keys [width height style]}]
+  [text {:keys [width height style]}]
   (let [base-style (or style [])]
     (->> text
          (with-height height)

@@ -48,7 +48,7 @@
     - style: base style for the window (optional)."
   [output-buf text window]
   (let [{:keys [row column width height style]} window
-        render-settings #::internal.txt{:width width :height height :style style}
+        render-settings {:width width :height height :style style}
         rendered-text   (-> text
                             internal.txt/loose-text->text
                             (internal.txt/render render-settings))

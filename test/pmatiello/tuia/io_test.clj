@@ -4,8 +4,7 @@
             [pmatiello.tuia.internal.ansi.erase :as erase]
             [pmatiello.tuia.internal.ansi.graphics :as graphics]
             [pmatiello.tuia.internal.fixtures :as fixtures]
-            [pmatiello.tuia.io :as io]
-            [pmatiello.tuia.text :as txt]))
+            [pmatiello.tuia.io :as io]))
 
 (use-fixtures :each fixtures/with-readable-csi fixtures/with-spec-instrumentation)
 
@@ -25,8 +24,8 @@
   (testing "prints strict text at location"
     (let [output-buf (new-output-buf)]
       (io/print! output-buf
-                 [[#::txt{:style [] :body "line1"}]
-                  [#::txt{:style [] :body "line2"}]]
+                 [[{:style [] :body "line1"}]
+                  [{:style [] :body "line2"}]]
                  {:row 4 :column 3 :width 5 :height 2})
       (is (= [(str (cursor/position 4 3) (graphics/reset) "line1")
               (str (cursor/position 5 3) (graphics/reset) "line2")]

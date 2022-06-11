@@ -1,7 +1,6 @@
 (ns pmatiello.tuia.input-demo
   (:require [clojure.spec.test.alpha :as stest]
             [pmatiello.tuia.core :as tuia.core]
-            [pmatiello.tuia.event :as tuia.event]
             [pmatiello.tuia.io :as tuia.io])
   (:import (clojure.lang ExceptionInfo)))
 
@@ -15,13 +14,12 @@
 
 (defn- full-render?
   [old new]
-  (or (nil? (::tuia.event/init old))
-      (not= (::tuia.event/size old) (::tuia.event/size new))))
+  (or (nil? (:init old))
+      (not= (:size old) (:size new))))
 
 (defn event->text
-  [{:keys [::tuia.event/type ::tuia.event/value]}]
-  [{:style [:fg-blue] :body (str type)}
-   {:style [:fg-blue] :body ": "}
+  [{:keys [:type :value]}]
+  [{:style [:fg-blue] :body (str type " ")}
    {:style [:bold-off] :body (str value)}])
 
 (defn- render
@@ -31,7 +29,7 @@
     (tuia.io/clear-screen! output)
     (tuia.io/print! output header {:row 1 :column 1 :width 23 :height 3}))
 
-  (when (::tuia.event/halt new-state)
+  (when (:halt new-state)
     (tuia.io/show-cursor! output))
 
   (tuia.io/print! output (map event->text (:events new-state))
@@ -43,7 +41,7 @@
   (swap! state assoc :events
          (->> event (conj (:events @state)) (take 5)))
 
-  (when (-> event ::tuia.event/value #{:eot})
+  (when (-> event :value #{:eot})
     (throw (ex-info "Interrupted" {:cause :interrupted}))))
 
 (defn -main

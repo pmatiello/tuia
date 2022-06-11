@@ -32,7 +32,7 @@
 
 (defn- notify!
   "Notify functions of an event."
-  [handle-fn state {::event/keys [type value] :as event}]
+  [handle-fn state {:keys [type value] :as event}]
   (call-sync! handle-fn event)
   (swap! state assoc type value))
 
@@ -58,20 +58,20 @@
   [handle-fn render-fn state input output!]
   (try
     (add-watch state ::state-changed (watch-fn render-fn output!))
-    (notify! handle-fn state #::event{:type ::event/init :value true})
+    (notify! handle-fn state {:type :init :value true})
 
     (signal/trap :winch (partial tty-size?! output!))
     (tty-size?! output! nil)
 
     (doseq [event input]
-      (case (::event/type event)
-        ::event/cursor-position
-        (notify! handle-fn state (assoc event ::event/type ::event/size))
+      (case (:type event)
+        :cursor-position
+        (notify! handle-fn state (assoc event :type :size))
 
         (call-sync! handle-fn event)))
 
     (finally
-      (notify! handle-fn state #::event{:type ::event/halt :value true})
+      (notify! handle-fn state {:type :halt :value true})
       (remove-watch state ::state-changed))))
 
 (s/fdef with-mainloop

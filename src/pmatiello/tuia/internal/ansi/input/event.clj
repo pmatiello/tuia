@@ -75,7 +75,7 @@
   "Returns keypress event for special keys (up, down, f1, esc, etc.)."
   [char-codes]
   (if-let [key (get special-keys char-codes)]
-    #::event{:type ::event/keypress :value key}))
+    {:type :keypress :value key}))
 
 (s/fdef special-key
   :args (s/cat :char-codes ::char-code-group)
@@ -85,8 +85,8 @@
   "Returns keypress event for regular keys (A, B, 1, 2, etc.)."
   [char-codes]
   (when (= (count char-codes) 1)
-    #::event{:type  ::event/keypress
-             :value (-> char-codes first char str)}))
+    {:type  :keypress
+     :value (-> char-codes first char str)}))
 
 (s/fdef regular-key
   :args (s/cat :char-codes ::char-code-group)
@@ -97,9 +97,9 @@
   [char-codes]
   (when (and (= (take 2 char-codes) [27 91]) (= (last char-codes) 82))
     (let [pos-chars (->> char-codes (drop 2) drop-last)
-          line (->> pos-chars (take-while #(not= % 59)) (map char) str/join Integer/parseInt)
-          column (->> pos-chars (drop-while #(not= % 59)) (drop 1) (map char) str/join Integer/parseInt)]
-      #::event{:type ::event/cursor-position :value [line column]})))
+          line      (->> pos-chars (take-while #(not= % 59)) (map char) str/join Integer/parseInt)
+          column    (->> pos-chars (drop-while #(not= % 59)) (drop 1) (map char) str/join Integer/parseInt)]
+      {:type :cursor-position :value [line column]})))
 
 (s/fdef device-status-report
   :args (s/cat :char-codes ::char-code-group)
@@ -111,7 +111,7 @@
   (or (special-key char-codes)
       (regular-key char-codes)
       (device-status-report char-codes)
-      #::event{:type ::event/unknown :value char-codes}))
+      {:type :unknown :value char-codes}))
 
 (s/fdef char-codes->event
   :args (s/cat :char-codes ::char-code-group)
